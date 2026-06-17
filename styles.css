@@ -207,6 +207,19 @@ section{position:relative}
 .quote .who .av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue-1));display:grid;place-items:center;font-weight:800;font-size:15px;color:#04210F}
 .quote .who .nm{font-weight:700;font-size:15px}
 .quote .who .rl{color:var(--muted);font-size:13px}
+/* vídeo facade nos depoimentos */
+.vthumb{position:relative;display:block;width:100%;aspect-ratio:16/9;border:1px solid var(--line);border-radius:14px;margin-bottom:22px;background-size:cover;background-position:center;cursor:pointer;overflow:hidden;padding:0;transition:transform .3s var(--ease)}
+.vthumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,22,0),rgba(7,11,22,.45))}
+.vthumb:hover{transform:scale(1.01)}
+.vthumb .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:var(--green);z-index:1;box-shadow:0 8px 26px -6px rgba(43,212,111,.6);transition:transform .25s var(--ease)}
+.vthumb .play::before{content:"";position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:9px 0 9px 15px;border-color:transparent transparent transparent var(--green-ink)}
+.vthumb:hover .play{transform:translate(-50%,-50%) scale(1.08)}
+.quote iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:14px;margin-bottom:22px;display:block}
+/* desenvolvido por Metris */
+.dev-by{display:inline-flex;align-items:center;gap:8px;margin-top:18px;color:var(--muted);font-size:14px;transition:color .2s}
+.dev-by:hover{color:var(--text)}
+.dev-by img{width:22px;height:22px;border-radius:6px;display:block}
+.dev-by b{font-weight:700}
 
 /* ---------- FAQ ---------- */
 .faq{max-width:820px;margin:44px auto 0;display:grid;gap:14px}

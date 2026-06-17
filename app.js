@@ -68,3 +68,16 @@ function bindLeadForm(form){
   });
 }
 document.querySelectorAll('form.mform,form.news-form').forEach(bindLeadForm);
+
+// Depoimentos em vídeo: troca o thumbnail pelo player ao clicar
+document.querySelectorAll('.vthumb').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const id=btn.dataset.yt;
+    const ifr=document.createElement('iframe');
+    ifr.src=`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+    ifr.title='Depoimento em vídeo';
+    ifr.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    ifr.allowFullscreen=true;
+    btn.replaceWith(ifr);
+  });
+});
