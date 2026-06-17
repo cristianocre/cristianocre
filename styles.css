@@ -313,3 +313,35 @@ footer{border-top:1px solid var(--line-soft);margin-top:40px;padding:64px 0 30px
   .reveal{opacity:1;transform:none;transition:none}
   .btn:hover,.stat:hover,.ccard:hover,.quote:hover,.fitem:hover,.mat:hover{transform:none}
 }
+
+/* ===== Aviso de sucesso de formulário ===== */
+.form-success{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:6px 0;animation:fadeUp .45s var(--ease)}
+.form-success .fs-check{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:rgba(43,212,111,.14);color:var(--green);margin-bottom:6px}
+.form-success .fs-title{color:var(--text);font-weight:700;font-size:16px;margin:0}
+.form-success .fs-sub{color:var(--muted);font-size:13.5px;margin:0;line-height:1.5}
+.form-success .fs-link{margin-top:12px;color:var(--green);font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:4px}
+.form-success .fs-link:hover{text-decoration:underline}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ===== Botão flutuante de WhatsApp ===== */
+.wa-float{position:fixed;right:20px;bottom:20px;z-index:90;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--green);color:var(--green-ink);box-shadow:0 12px 30px -8px rgba(43,212,111,.6);transition:transform .25s var(--ease),box-shadow .25s var(--ease);animation:waIn .45s var(--ease) .6s both}
+.wa-float:hover{transform:scale(1.08);box-shadow:0 16px 40px -8px rgba(43,212,111,.78)}
+.wa-float svg{display:block}
+@keyframes waIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+@media(max-width:560px){.wa-float{right:16px;bottom:16px;width:54px;height:54px}}
+
+/* ===== Páginas legais (Termos / Privacidade) ===== */
+.legal{max-width:820px;margin:0 auto}
+.legal .updated{color:var(--muted);font-size:13.5px;margin:0 0 30px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.legal h2{font-size:20px;margin:34px 0 10px;color:var(--text)}
+.legal h3{font-size:15.5px;margin:20px 0 6px;color:var(--text)}
+.legal p{color:var(--muted);line-height:1.75;font-size:15px;margin:0 0 12px}
+.legal ul{margin:8px 0 16px;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+.legal li{color:var(--muted);line-height:1.65;font-size:15px}
+.legal a{color:var(--green)}
+.legal a:hover{text-decoration:underline}
+.legal .legal-box{border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;background:var(--card)}
+.legal table.ck{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+.legal table.ck th,.legal table.ck td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+.legal table.ck td{color:var(--muted)}
+.legal table.ck th{color:var(--text);font-weight:600;background:var(--card)}
