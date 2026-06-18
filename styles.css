@@ -345,3 +345,45 @@ footer{border-top:1px solid var(--line-soft);margin-top:40px;padding:64px 0 30px
 .legal table.ck th,.legal table.ck td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
 .legal table.ck td{color:var(--muted)}
 .legal table.ck th{color:var(--text);font-weight:600;background:var(--card)}
+
+/* ===== Blog / artigo SEO ===== */
+.post-hero h1{font-size:clamp(28px,3.6vw,44px);line-height:1.18;max-width:22ch;margin:20px auto 0;letter-spacing:-.015em}
+.post-hero .sub{max-width:60ch;margin:18px auto 0}
+.post{max-width:720px;margin:0 auto}
+.post>*:first-child{margin-top:0}
+.post p{color:var(--muted);line-height:1.8;font-size:16.5px;margin:0 0 20px}
+.post .lead{font-size:18.5px;line-height:1.7;color:var(--text);margin:0;padding-bottom:30px;border-bottom:1px solid var(--line)}
+.post h2{font-size:25px;line-height:1.3;margin:46px 0 16px;color:var(--text);letter-spacing:-.01em}
+.post .lead + h2{margin-top:36px}
+.post h3{font-size:17px;margin:28px 0 10px;color:var(--text)}
+.post ul,.post ol{margin:0 0 24px;padding-left:24px;display:flex;flex-direction:column;gap:12px}
+.post li{color:var(--muted);line-height:1.7;font-size:16.5px;padding-left:4px}
+.post li::marker{color:var(--green)}
+.post li b,.post p b{color:var(--text)}
+.post a{color:var(--green)}
+.post a:hover{text-decoration:underline}
+.post .keybox{border:1px solid var(--line);border-left:3px solid var(--green);border-radius:12px;padding:18px 22px;margin:6px 0 26px;background:var(--card)}
+.post .keybox p{margin:0;color:var(--text);line-height:1.7}
+.post .cta-inline{border:1px solid rgba(43,212,111,.3);border-radius:16px;padding:30px 26px;margin:40px 0;background:linear-gradient(180deg,rgba(43,212,111,.07),rgba(43,212,111,.01));text-align:center}
+.post .cta-inline h3{font-size:20px;color:var(--text);margin:0 0 10px}
+.post .cta-inline p{margin:0 0 20px;color:var(--muted)}
+
+/* byline (autor no topo) */
+.byline{display:flex;align-items:center;justify-content:center;gap:11px;margin:22px auto 0}
+.byline img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid var(--line)}
+.byline .bl-txt{text-align:left;line-height:1.3}
+.byline .bl-name{color:var(--text);font-weight:600;font-size:14.5px}
+.byline .bl-name a{color:var(--text)}
+.byline .bl-name a:hover{color:var(--green)}
+.byline .bl-meta{color:var(--muted);font-size:12.5px}
+
+/* card de autor (E-E-A-T) */
+.author-card{display:flex;gap:22px;align-items:flex-start;border:1px solid var(--line);border-radius:18px;padding:26px;margin:44px 0 8px;background:var(--card)}
+.author-card .ac-photo{flex:0 0 auto;width:88px;height:88px;border-radius:16px;object-fit:cover;border:1px solid var(--line)}
+.author-card .ac-role{color:var(--green);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em}
+.author-card h3{margin:5px 0 10px;font-size:19px;color:var(--text)}
+.author-card p{font-size:14.5px;color:var(--muted);line-height:1.7;margin:0 0 14px}
+.author-card .ac-links{display:flex;gap:18px;flex-wrap:wrap}
+.author-card .ac-links a{color:var(--green);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.author-card .ac-links a:hover{text-decoration:underline}
+@media(max-width:560px){.author-card{flex-direction:column;gap:16px;padding:22px}.author-card .ac-photo{width:74px;height:74px}}
