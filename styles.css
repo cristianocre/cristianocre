@@ -360,8 +360,8 @@ footer{border-top:1px solid var(--line-soft);margin-top:40px;padding:64px 0 30px
 .post li{color:var(--muted);line-height:1.7;font-size:16.5px;padding-left:4px}
 .post li::marker{color:var(--green)}
 .post li b,.post p b{color:var(--text)}
-.post a{color:var(--green)}
-.post a:hover{text-decoration:underline}
+.post a:not(.btn){color:var(--green)}
+.post a:not(.btn):hover{text-decoration:underline}
 .post .keybox{border:1px solid var(--line);border-left:3px solid var(--green);border-radius:12px;padding:18px 22px;margin:6px 0 26px;background:var(--card)}
 .post .keybox p{margin:0;color:var(--text);line-height:1.7}
 .post .cta-inline{border:1px solid rgba(43,212,111,.3);border-radius:16px;padding:30px 26px;margin:40px 0;background:linear-gradient(180deg,rgba(43,212,111,.07),rgba(43,212,111,.01));text-align:center}
