@@ -387,3 +387,24 @@ footer{border-top:1px solid var(--line-soft);margin-top:40px;padding:64px 0 30px
 .author-card .ac-links a{color:var(--green);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:5px}
 .author-card .ac-links a:hover{text-decoration:underline}
 @media(max-width:560px){.author-card{flex-direction:column;gap:16px;padding:22px}.author-card .ac-photo{width:74px;height:74px}}
+
+/* ===== Insights / lista de artigos (blog) ===== */
+.ilist{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.icard{display:block;border:1px solid var(--line);background:var(--card);border-radius:var(--radius-lg);padding:34px 36px;transition:transform .3s var(--ease),border-color .3s,background .3s}
+.icard:hover{transform:translateY(-4px);border-color:rgba(43,212,111,.4);background:var(--card-hover)}
+.icard .ichip{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:7px 14px;border-radius:999px;background:rgba(43,212,111,.1);color:var(--green)}
+.icard h2{font-size:clamp(22px,3vw,28px);line-height:1.22;margin:20px 0 0;letter-spacing:-.015em;transition:color .25s}
+.icard:hover h2{color:var(--green)}
+.icard p{color:var(--muted);font-size:16.5px;line-height:1.65;margin:14px 0 0}
+.icard .imeta{display:flex;align-items:center;gap:12px;margin-top:24px;flex-wrap:wrap}
+.icard .imeta img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:1px solid var(--line)}
+.icard .imeta .who{color:var(--text);font-weight:600;font-size:14px}
+.icard .imeta .dot-sep{color:var(--muted-soft)}
+.icard .imeta .mt{color:var(--muted);font-size:13.5px}
+.icard .igo{margin-left:auto;color:var(--green);font-weight:700;font-size:14.5px;display:inline-flex;align-items:center;gap:7px}
+.icard .igo .ar{transition:transform .25s var(--ease)}
+.icard:hover .igo .ar{transform:translateX(4px)}
+@media(max-width:560px){
+  .icard{padding:28px 24px}
+  .icard .imeta .igo{margin-left:0;width:100%;margin-top:4px}
+}
