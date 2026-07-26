@@ -42,21 +42,62 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.cristianocre.com/#metris",
+      "name": "Metris",
+      "alternateName": "Metris — Performance para Resultados",
+      "url": "https://metris.digital/",
+      "logo": { "@type": "ImageObject", "url": "https://www.cristianocre.com/metris-icon.png" },
+      "sameAs": [
+        "https://www.instagram.com/metris.digital/",
+        "https://br.linkedin.com/company/metris-digital"
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://www.cristianocre.com/#cristiano",
+      "name": "Cristiano Creczyenski",
+      "jobTitle": "CEO da Metris",
+      "url": "https://www.cristianocre.com/",
+      "image": "https://www.cristianocre.com/cristiano.jpg",
+      "worksFor": { "@id": "https://www.cristianocre.com/#metris" },
+      "sameAs": [
+        "https://instagram.com/cristianocre",
+        "https://www.youtube.com/@cristianocre",
+        "https://br.linkedin.com/in/cristianocre"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.cristianocre.com/#website",
+      "url": "https://www.cristianocre.com/",
+      "name": "Cristiano Creczyenski",
+      "inLanguage": "pt-BR",
+      "publisher": { "@id": "https://www.cristianocre.com/#metris" }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <a href="#main" class="skip">Pular para o conteúdo</a>
 
 <header class="nav" id="nav">
   <div class="wrap nav-inner">
-    <a href="index.html" class="logo">Cristiano <span>Creczyenski</span></a>
+    <a href="/" class="logo">Cristiano <span>Creczyenski</span></a>
     <nav class="nav-links" aria-label="Principal">
-      <a href="index.html" class="active">Home</a>
-      <a href="materiais.html">Materiais</a>
-      <a href="diagnostico.html">Diagnóstico 360</a>
-      <a href="mentoria.html">Mentoria</a>
+      <a href="/" class="active">Home</a>
+      <a href="/materiais">Materiais</a>
+      <a href="/diagnostico">Diagnóstico 360</a>
+      <a href="/mentoria">Mentoria</a>
     </nav>
     <div class="nav-right">
-      <a href="diagnostico.html" class="btn btn-green btn-sm">Fazer meu diagnóstico <span class="ar">→</span></a>
+      <a href="/diagnostico" class="btn btn-green btn-sm">Fazer meu diagnóstico <span class="ar">→</span></a>
       <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
       </button>
@@ -65,11 +106,11 @@
 </header>
 
 <nav class="mobile-menu" id="mobileMenu" aria-label="Menu mobile">
-  <a href="index.html">Home</a>
-  <a href="materiais.html">Materiais</a>
-  <a href="diagnostico.html">Diagnóstico 360</a>
-  <a href="mentoria.html">Mentoria</a>
-  <a href="diagnostico.html" class="btn btn-green btn-block">Fazer meu diagnóstico 360 <span class="ar">→</span></a>
+  <a href="/">Home</a>
+  <a href="/materiais">Materiais</a>
+  <a href="/diagnostico">Diagnóstico 360</a>
+  <a href="/mentoria">Mentoria</a>
+  <a href="/diagnostico" class="btn btn-green btn-block">Fazer meu diagnóstico 360 <span class="ar">→</span></a>
 </nav>
 
 <main id="main">
@@ -80,8 +121,8 @@
     <h1>Acelere seu e‑commerce com o método de quem já escalou <span class="accent">centenas de marcas.</span></h1>
     <p class="sub">Estratégia, performance, CRM e IA para empreendedores que querem vender mais com consistência.</p>
     <div class="hero-cta">
-      <a href="diagnostico.html" class="btn btn-green">Fazer meu diagnóstico 360 <span class="ar">→</span></a>
-      <a href="materiais.html" class="btn btn-ghost">Pegar os materiais gratuitos</a>
+      <a href="/diagnostico" class="btn btn-green">Fazer meu diagnóstico 360 <span class="ar">→</span></a>
+      <a href="/materiais" class="btn btn-ghost">Pegar os materiais gratuitos</a>
     </div>
     <div class="proof">
       <div class="avatars">
@@ -144,13 +185,13 @@
         <span class="chip">📋 Material</span>
         <h3>Checklist de E‑commerce</h3>
         <p>O passo a passo de verificação para garantir que sua loja não está deixando vendas na mesa. Baixe e use hoje.</p>
-        <a href="materiais.html" class="go">Baixar checklist →</a>
+        <a href="/materiais" class="go">Baixar checklist →</a>
       </article>
       <article class="ccard">
         <span class="chip">🗓️ Material</span>
         <h3>Calendário 2026</h3>
         <p>As melhores datas comerciais do ano para planejar campanhas e não perder nenhuma oportunidade de venda.</p>
-        <a href="materiais.html" class="go">Pegar o calendário →</a>
+        <a href="/materiais" class="go">Pegar o calendário →</a>
       </article>
     </div>
   </div>
@@ -174,7 +215,7 @@
         <aside class="diag-side">
           <div class="big">1h</div>
           <div class="cap">gratuita e online, com o Cristiano</div>
-          <a href="diagnostico.html" class="btn btn-green btn-block">Agendar minha análise <span class="ar">→</span></a>
+          <a href="/diagnostico" class="btn btn-green btn-block">Agendar minha análise <span class="ar">→</span></a>
           <p class="micro">3 vagas por semana, limitadas pela agenda do Cristiano.</p>
         </aside>
       </div>
@@ -247,17 +288,17 @@
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-brand">
-        <a href="index.html" class="logo">Cristiano <span>Creczyenski</span></a>
+        <a href="/" class="logo">Cristiano <span>Creczyenski</span></a>
         <p>Metris. Performance e resultados em marketing e e‑commerce para empreendedores que querem crescer.</p>
         <a class="dev-by" href="https://metris.digital/?utm_source=cristianocre&utm_medium=site" target="_blank" rel="noopener"><img src="metris-icon.png" alt="Metris" width="22" height="22"><span>Desenvolvido por <b>Metris</b></span></a>
       </div>
       <div class="foot-col">
         <h4>Navegação</h4>
-        <a href="index.html">Home</a>
-        <a href="materiais.html">Materiais</a>
-        <a href="materiais.html#insights">Insights</a>
-        <a href="diagnostico.html">Diagnóstico 360</a>
-        <a href="mentoria.html">Mentoria</a>
+        <a href="/">Home</a>
+        <a href="/materiais">Materiais</a>
+        <a href="/materiais#insights">Insights</a>
+        <a href="/diagnostico">Diagnóstico 360</a>
+        <a href="/mentoria">Mentoria</a>
       </div>
       <div class="foot-col">
         <h4>Social</h4>
@@ -268,7 +309,7 @@
     </div>
     <div class="foot-bottom">
       <span>© 2026 Metris. Todos os direitos reservados.</span>
-      <div class="links"><a href="termos.html">Termos</a><a href="privacidade.html">Privacidade</a></div>
+      <div class="links"><a href="/termos">Termos</a><a href="/privacidade">Privacidade</a></div>
     </div>
   </div>
 </footer>
