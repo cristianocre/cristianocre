@@ -435,5 +435,5 @@ footer{border-top:1px solid var(--line-soft);margin-top:40px;padding:64px 0 30px
 @media(max-width:560px){.yt-carousel .vcard{flex-basis:84vw;max-width:84vw}}
 /* Imagem de capa dos posts */
 .post-cover{max-width:720px;margin:0 auto 8px}
-.post-cover img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block;border-radius:var(--radius);border:0}
+.post-cover img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block;border-radius:var(--radius);border:0;background:#0c1424}
 .post-cover figcaption{font-size:13px;color:var(--muted-soft);margin-top:10px;text-align:center;line-height:1.5}
