@@ -433,3 +433,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:40px;padding:64px 0 30px
 .vcard.skel .ph{background:linear-gradient(90deg,rgba(255,255,255,.045),rgba(255,255,255,.10),rgba(255,255,255,.045));background-size:200% 100%;animation:ytpulse 1.3s ease-in-out infinite;border-radius:6px}
 @keyframes ytpulse{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @media(max-width:560px){.yt-carousel .vcard{flex-basis:84vw;max-width:84vw}}
+/* Imagem de capa dos posts */
+.post-cover{margin:0 0 4px}
+.post-cover img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block;border-radius:var(--radius);border:1px solid rgba(255,255,255,.06)}
+.post-cover figcaption{font-size:13px;color:var(--muted-soft);margin-top:10px;text-align:center;line-height:1.5}
