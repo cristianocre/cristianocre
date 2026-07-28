@@ -116,7 +116,8 @@ document.querySelectorAll('.vthumb').forEach(btn=>{
     const id=btn.dataset.yt;
     const ifr=document.createElement('iframe');
     ifr.src=`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
-    ifr.title='Depoimento em vídeo';
+    ifr.title=btn.getAttribute('aria-label')||'Vídeo';
+    ifr.className='vframe';
     ifr.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
     ifr.allowFullscreen=true;
     btn.replaceWith(ifr);
