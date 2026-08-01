@@ -123,3 +123,174 @@ document.querySelectorAll('.vthumb').forEach(btn=>{
     btn.replaceWith(ifr);
   });
 });
+
+// ===== Pop-up de saída (captura nome, e-mail e telefone -> WhatsApp) =====
+(function(){
+  const path = location.pathname.replace(/\.html$/,'').replace(/\/$/,'') || '/';
+  // não aparece na própria página do diagnóstico
+  if (path === '/diagnostico') return;
+
+  const WA = '5554999047085';
+  const VARIANTES = {
+    mentoria: {
+      img: '/img/popup-mentoria.jpg',
+      alt: 'Mentoria de e-commerce individual com Cristiano Creczyenski',
+      pill: 'Mentoria &middot; Lista de espera',
+      titulo: 'Quer entrar na fila da mentoria individual?',
+      sub: 'As vagas atuais estão preenchidas porque o acompanhamento é individual. Deixe seus dados e eu chamo você quando abrir a próxima, já sabendo o seu contexto.',
+      botao: 'Entrar na lista de espera',
+      material: 'Popup Mentoria',
+      wa: (n)=>`Olá Cristiano, sou ${n} e quero entrar na lista de espera da mentoria individual.`
+    },
+    curso: {
+      img: '/img/popup-curso.jpg',
+      alt: 'Curso de marketing para e-commerce com Cristiano Creczyenski',
+      pill: 'Método Ads para E-commerce',
+      titulo: 'Quer tirar dúvidas sobre o curso antes de comprar?',
+      sub: '60 aulas, 60 horas, acesso vitalício e certificado, por R$497. Deixe seus dados que eu respondo o que você precisar direto no WhatsApp.',
+      botao: 'Falar sobre o curso',
+      material: 'Popup Curso',
+      wa: (n)=>`Olá Cristiano, sou ${n} e quero tirar uma dúvida sobre o curso Método Ads para E-commerce.`
+    },
+    diagnostico: {
+      img: '/img/popup-diagnostico.jpg',
+      alt: 'Diagnóstico 360 do seu e-commerce com Cristiano Creczyenski',
+      pill: 'Diagnóstico 360 &middot; Gratuito',
+      titulo: 'Antes de sair: sabe onde a sua loja está perdendo dinheiro?',
+      sub: 'Em uma hora comigo, você descobre o gargalo real do seu e-commerce e sai com as três prioridades para os próximos 90 dias. É gratuito e sem compromisso.',
+      botao: 'Quero meu diagnóstico',
+      material: 'Popup Diagnóstico 360',
+      wa: (n)=>`Olá Cristiano, sou ${n} e quero agendar meu Diagnóstico 360.`
+    }
+  };
+
+  let key = 'diagnostico';
+  if (path === '/mentoria') key = 'mentoria';
+  else if (path === '/curso-marketing-para-ecommerce' || path === '/cursos-online') key = 'curso';
+  const V = VARIANTES[key];
+
+  // frequência: 7 dias depois de ver, 90 dias depois de converter
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+    set(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+  };
+  const agora = Date.now();
+  const visto = parseInt(store.get('cc_xp_visto')||'0', 10);
+  const convertido = parseInt(store.get('cc_xp_lead')||'0', 10);
+  if (convertido && agora - convertido < 90*864e5) return;
+  if (visto && agora - visto < 7*864e5) return;
+
+  let aberto = false, armado = false, ultimoFoco = null;
+
+  const el = document.createElement('div');
+  el.className = 'xp-overlay';
+  el.innerHTML =
+    '<div class="xp" role="dialog" aria-modal="true" aria-labelledby="xpTitulo">'
+    + '<button class="xp-close" type="button" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>'
+    + '<div class="xp-visual"><img src="'+V.img+'" alt="'+V.alt+'" width="900" height="900" loading="lazy" decoding="async"></div>'
+    + '<div class="xp-body">'
+    +   '<span class="pill"><span class="dot"></span>'+V.pill+'</span>'
+    +   '<h2 id="xpTitulo">'+V.titulo+'</h2>'
+    +   '<p class="xp-sub">'+V.sub+'</p>'
+    +   '<form class="xp-form" novalidate>'
+    +     '<input type="text" name="nome" placeholder="Seu nome" aria-label="Seu nome" autocomplete="name" required>'
+    +     '<input type="email" name="email" placeholder="Seu melhor e-mail" aria-label="Seu melhor e-mail" autocomplete="email" required>'
+    +     '<input type="tel" name="telefone" placeholder="WhatsApp com DDD" aria-label="WhatsApp com DDD" autocomplete="tel" inputmode="numeric" required>'
+    +     '<button class="btn btn-green btn-block" type="submit">'+V.botao+' <span class="ar">&#8594;</span></button>'
+    +     '<p class="xp-msg" role="alert"></p>'
+    +   '</form>'
+    +   '<p class="xp-micro">Ao enviar, você vai direto para o WhatsApp. Seus dados não são compartilhados com ninguém.</p>'
+    + '</div></div>';
+  document.body.appendChild(el);
+
+  const form = el.querySelector('.xp-form');
+  const msg  = el.querySelector('.xp-msg');
+  const tel  = form.querySelector('input[name=telefone]');
+
+  function abrir(){
+    if (aberto) return;
+    aberto = true;
+    ultimoFoco = document.activeElement;
+    el.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    store.set('cc_xp_visto', String(Date.now()));
+    setTimeout(()=>{ const i=form.querySelector('input'); if(i) i.focus({preventScroll:true}); }, 120);
+    track('popup_saida_exibido', {variante:key, origem:path}, 'ViewContent', {content_name:V.material});
+  }
+  function fechar(){
+    if (!aberto) return;
+    aberto = false;
+    el.classList.remove('open');
+    document.body.style.overflow = '';
+    if (ultimoFoco && ultimoFoco.focus) ultimoFoco.focus();
+  }
+
+  el.querySelector('.xp-close').addEventListener('click', fechar);
+  el.addEventListener('mousedown', (e)=>{ if(e.target===el) fechar(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') fechar(); });
+
+  // máscara simples de telefone brasileiro
+  tel.addEventListener('input', ()=>{
+    let v = tel.value.replace(/\D/g,'').slice(0,11);
+    if (v.length > 10) v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+    else if (v.length > 6) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+    else if (v.length > 2) v = v.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+    else if (v.length) v = v.replace(/(\d{0,2})/, '($1');
+    tel.value = v;
+  });
+
+  form.addEventListener('submit', async (ev)=>{
+    ev.preventDefault();
+    const nome = form.nome.value.trim();
+    const email = form.email.value.trim();
+    const fone = form.telefone.value.replace(/\D/g,'');
+    [form.nome, form.email, form.telefone].forEach(i=>i.classList.remove('err'));
+    if (nome.length < 2){ form.nome.classList.add('err'); form.nome.focus(); msg.textContent='Como posso te chamar?'; return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ form.email.classList.add('err'); form.email.focus(); msg.textContent='Confere o e-mail, por favor.'; return; }
+    if (fone.length < 10){ form.telefone.classList.add('err'); form.telefone.focus(); msg.textContent='Preciso do WhatsApp com DDD.'; return; }
+    msg.textContent='';
+
+    // abre a aba de forma síncrona para não ser bloqueada pelo navegador
+    const aba = window.open('about:blank', '_blank');
+    const btn = form.querySelector('button[type=submit]');
+    const rotulo = btn.innerHTML;
+    btn.disabled = true; btn.innerHTML = 'Enviando…';
+
+    const url = 'https://wa.me/'+WA+'?text='+encodeURIComponent(V.wa(nome.split(' ')[0]));
+    try{
+      await fetch('/api/inscrever', {
+        method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true,
+        body: JSON.stringify({ nome, email, telefone: fone, material: V.material, origem: path })
+      });
+    }catch(e){}
+
+    store.set('cc_xp_lead', String(Date.now()));
+    track('lead_popup_saida', {variante:key, origem:path}, 'Lead', {content_name:V.material});
+    if (aba) aba.location.href = url; else window.location.href = url;
+    form.innerHTML = leadSuccess('Recebi seus dados!','Estamos te levando para o WhatsApp.', url);
+    btn.innerHTML = rotulo;
+  });
+
+  // ---- gatilhos
+  setTimeout(()=>{ armado = true; }, 8000);
+
+  const desktop = window.matchMedia('(min-width: 821px)').matches && window.matchMedia('(hover: hover)').matches;
+  if (desktop){
+    document.addEventListener('mouseout', (e)=>{
+      if (!armado || aberto) return;
+      if (e.relatedTarget || e.toElement) return;
+      if (e.clientY > 4) return;
+      abrir();
+    });
+  } else {
+    let disparou = false;
+    const porScroll = ()=>{
+      if (!armado || aberto || disparou) return;
+      const h = document.documentElement;
+      const pct = (h.scrollTop + window.innerHeight) / h.scrollHeight;
+      if (pct >= 0.72){ disparou = true; abrir(); }
+    };
+    window.addEventListener('scroll', porScroll, {passive:true});
+    setTimeout(()=>{ if(armado && !aberto && !disparou){ disparou = true; abrir(); } }, 45000);
+  }
+})();
