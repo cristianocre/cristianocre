@@ -125,7 +125,7 @@ section{position:relative}
 .about-body{display:flex;flex-direction:column;gap:22px;min-width:0}
 .about-card{background:linear-gradient(155deg,rgba(43,212,111,.10),rgba(46,99,240,.08));border:1px solid var(--line);border-radius:var(--radius-lg);padding:38px}
 .about-card .role{color:var(--green);font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase}
-.about-card h3{font-size:30px;margin:10px 0 16px}
+.about-card h3,.about-card h2{font-size:30px;margin:10px 0 16px}
 .about-card p{color:var(--muted);font-size:16.5px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 22px;transition:transform .3s var(--ease),border-color .3s}
