@@ -1,0 +1,25 @@
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+.thumbnail
+
+# Dependências e build
+node_modules/
+.vercel/
+
+# Segredos: nunca versionar
+.env
+.env.*
+!.env.example
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Temporários
+_to_delete/
+*.bak
+*.tmp
+*.log

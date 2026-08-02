@@ -42,6 +42,12 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
 // Captação de leads -> Notion (via /api/inscrever) + redirect
 function bindLeadForm(form){
+  // honeypot anti-robô: campo invisível que humano não preenche
+  const hp=document.createElement('input');
+  hp.type='text'; hp.name='empresa'; hp.tabIndex=-1; hp.autocomplete='off';
+  hp.setAttribute('aria-hidden','true');
+  hp.style.cssText='position:absolute;left:-9999px;width:1px;height:1px;opacity:0';
+  form.appendChild(hp);
   form.addEventListener('submit', async (ev)=>{
     ev.preventDefault();
     const input=form.querySelector('input[type=email]');
@@ -56,7 +62,7 @@ function bindLeadForm(form){
       const resp=await fetch('/api/inscrever',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({email,material,origem:(location.pathname+location.search)})
+        body:JSON.stringify({email,material,empresa:hp.value,origem:(location.pathname+location.search)})
       });
       const data=await resp.json().catch(()=>({ok:false}));
       if(data.ok){
@@ -196,6 +202,7 @@ document.querySelectorAll('.vthumb').forEach(btn=>{
     +     '<input type="text" name="nome" placeholder="Seu nome" aria-label="Seu nome" autocomplete="name" required>'
     +     '<input type="email" name="email" placeholder="Seu melhor e-mail" aria-label="Seu melhor e-mail" autocomplete="email" required>'
     +     '<input type="tel" name="telefone" placeholder="WhatsApp com DDD" aria-label="WhatsApp com DDD" autocomplete="tel" inputmode="numeric" required>'
+    +     '<input type="text" name="empresa" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">'
     +     '<button class="btn btn-green btn-block" type="submit">'+V.botao+' <span class="ar">&#8594;</span></button>'
     +     '<p class="xp-msg" role="alert"></p>'
     +   '</form>'
@@ -260,7 +267,7 @@ document.querySelectorAll('.vthumb').forEach(btn=>{
     try{
       await fetch('/api/inscrever', {
         method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true,
-        body: JSON.stringify({ nome, email, telefone: fone, material: V.material, origem: path })
+        body: JSON.stringify({ nome, email, telefone: fone, material: V.material, origem: path, empresa: form.empresa.value })
       });
     }catch(e){}
 
