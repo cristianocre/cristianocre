@@ -9,13 +9,20 @@
 // Só os canais da lista abaixo são aceitos. Isso evita que a função vire
 // um proxy aberto para qualquer canal do YouTube.
 
+// Observação importante sobre o podcast:
+// o canal Performance para Resultados (UClDIQjliJFirXWqkXQ7fPRA) tem o feed de
+// uploads vazio, porque os episódios são publicados no canal principal do
+// Cristiano. Por isso o podcast lê o feed do canal principal e filtra pelo
+// título. Se um dia os vídeos passarem a ser enviados no canal do podcast,
+// basta trocar o handle por channelId: 'UClDIQjliJFirXWqkXQ7fPRA' e apagar o filtro.
 const CANAIS = {
   cristiano: { handle: 'cristianocre' },
-  podcast: { channelId: 'UClDIQjliJFirXWqkXQ7fPRA', handle: 'PerformanceParaResultados' },
+  podcast: { handle: 'cristianocre', filtro: /podcast/i, agruparPorEpisodio: true },
 };
 
 const PADRAO = 'cristiano';
-const MAX = 5;
+const MAX = 6;          // quantos itens a função devolve
+const MAX_FEED = 15;    // o feed RSS do YouTube entrega no máximo 15 entradas
 const TTL = 1000 * 60 * 30; // 30 min
 
 // Cache em memória da instância, uma entrada por canal.
@@ -41,13 +48,31 @@ function decode(s) {
 }
 
 function parseFeed(xml) {
-  const entries = xml.split('<entry>').slice(1, MAX + 1);
+  const entries = xml.split('<entry>').slice(1, MAX_FEED + 1);
   return entries.map((e) => {
     const id = (e.match(/<yt:videoId>([^<]+)<\/yt:videoId>/) || [])[1] || '';
     const title = decode((e.match(/<title>([^<]*)<\/title>/) || [])[1] || 'Vídeo');
     const date = (e.match(/<published>([^<]+)<\/published>/) || [])[1] || '';
     return { id, title, date };
   }).filter((v) => v.id);
+}
+
+// Aplica o filtro do canal e, quando pedido, mantém só um vídeo por número de
+// episódio, para o carrossel não ficar com quatro cortes do mesmo episódio.
+function selecionar(videos, canal) {
+  let lista = videos;
+  if (canal.filtro) lista = lista.filter((v) => canal.filtro.test(v.title));
+  if (canal.agruparPorEpisodio) {
+    const vistos = new Set();
+    lista = lista.filter((v) => {
+      const m = v.title.match(/podcast\s*#?\s*(\d+)/i);
+      if (!m) return true;
+      if (vistos.has(m[1])) return false;
+      vistos.add(m[1]);
+      return true;
+    });
+  }
+  return lista.slice(0, MAX);
 }
 
 module.exports = async (req, res) => {
@@ -68,8 +93,8 @@ module.exports = async (req, res) => {
       { headers: { 'User-Agent': 'Mozilla/5.0' } }
     );
     const xml = await feedRes.text();
-    const videos = parseFeed(xml);
-    if (!videos.length) throw new Error('feed vazio');
+    const videos = selecionar(parseFeed(xml), canal);
+    if (!videos.length) throw new Error('feed vazio ou sem itens que passem no filtro');
 
     CACHE[chave] = { at: Date.now(), videos };
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=86400');
