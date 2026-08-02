@@ -34,6 +34,16 @@ if(car){
   if(prev)prev.addEventListener('click',()=>car.scrollBy({left:-step,behavior:'smooth'}));
 }
 
+// Carousel arrows (genérico: qualquer botão com data-car="<id do carrossel>")
+document.querySelectorAll('[data-car]').forEach(btn=>{
+  const alvo=document.getElementById(btn.getAttribute('data-car'));
+  if(!alvo)return;
+  btn.addEventListener('click',()=>{
+    const passo=alvo.classList.contains('yt-carousel')?380:360;
+    alvo.scrollBy({left:btn.getAttribute('data-dir')==='prev'?-passo:passo,behavior:'smooth'});
+  });
+});
+
 // Reveal on scroll
 const io=new IntersectionObserver((entries)=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});

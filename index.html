@@ -69,7 +69,23 @@
       "sameAs": [
         "https://instagram.com/cristianocre",
         "https://www.youtube.com/@cristianocre",
+        "https://www.youtube.com/@PerformanceParaResultados",
         "https://br.linkedin.com/in/cristianocre"
+      ]
+    },
+    {
+      "@type": "PodcastSeries",
+      "@id": "https://www.cristianocre.com/#podcast",
+      "name": "Performance para Resultados",
+      "description": "Podcast de negócios sobre e-commerce, marketing de performance e gestão, com conversas sobre aquisição, margem, time e as decisões que fazem uma operação crescer.",
+      "inLanguage": "pt-BR",
+      "url": "https://www.cristianocre.com/#podcast",
+      "webFeed": "https://www.youtube.com/feeds/videos.xml?channel_id=UClDIQjliJFirXWqkXQ7fPRA",
+      "author": { "@id": "https://www.cristianocre.com/#cristiano" },
+      "producer": { "@id": "https://www.cristianocre.com/#metris" },
+      "sameAs": [
+        "https://www.youtube.com/@PerformanceParaResultados",
+        "https://www.youtube.com/channel/UClDIQjliJFirXWqkXQ7fPRA"
       ]
     },
     {
@@ -175,7 +191,7 @@
         <span class="chip">🎙️ Podcast</span>
         <h3>Performance para Resultados</h3>
         <p>Conversas e bastidores sobre o que faz um e‑commerce crescer de verdade: aquisição, métricas, oferta e operação. Episódios novos toda semana.</p>
-        <a href="https://www.youtube.com/@PerformanceParaResultados" class="go" target="_blank" rel="noopener">Ouvir agora →</a>
+        <a href="#podcast" class="go">Ver os episódios →</a>
       </article>
       <article class="ccard">
         <span class="chip">📷 Instagram</span>
@@ -196,6 +212,35 @@
         <a href="/materiais" class="go">Pegar o calendário →</a>
       </article>
     </div>
+  </div>
+</section>
+
+<!-- Podcast Performance para Resultados -->
+<section class="section" id="podcast" style="padding-top:0">
+  <div class="wrap">
+    <div class="carousel-top reveal">
+      <div class="sec-head" style="text-align:left;margin:0;max-width:660px">
+        <span class="pill"><span class="dot"></span>Podcast</span>
+        <h2>Performance para Resultados</h2>
+        <p>Conversas com quem opera de verdade: aquisição, margem, time e as decisões que fazem um e&#8209;commerce crescer. Um episódio novo por semana, apresentado pelo Cristiano.</p>
+      </div>
+      <div class="car-nav">
+        <button data-car="podcastCarousel" data-dir="prev" aria-label="Episódio anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button data-car="podcastCarousel" data-dir="next" aria-label="Próximo episódio"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+      </div>
+    </div>
+    <div class="carousel yt-carousel" id="podcastCarousel" aria-busy="true" aria-label="Últimos episódios do podcast Performance para Resultados"
+         data-yt-canal="podcast"
+         data-yt-link="https://www.youtube.com/@PerformanceParaResultados"
+         data-yt-titulo="Veja os episódios no canal"
+         data-yt-cta="Abrir o canal do podcast"
+         data-yt-rotulo="Assistir o episódio">
+      <article class="vcard skel"><div class="ph" style="width:100%;aspect-ratio:16/9"></div><div class="vbody"><div class="ph" style="width:42%;height:12px;margin-bottom:16px"></div><div class="ph" style="width:100%;height:15px;margin-bottom:9px"></div><div class="ph" style="width:72%;height:15px"></div></div></article>
+      <article class="vcard skel"><div class="ph" style="width:100%;aspect-ratio:16/9"></div><div class="vbody"><div class="ph" style="width:42%;height:12px;margin-bottom:16px"></div><div class="ph" style="width:100%;height:15px;margin-bottom:9px"></div><div class="ph" style="width:72%;height:15px"></div></div></article>
+      <article class="vcard skel"><div class="ph" style="width:100%;aspect-ratio:16/9"></div><div class="vbody"><div class="ph" style="width:42%;height:12px;margin-bottom:16px"></div><div class="ph" style="width:100%;height:15px;margin-bottom:9px"></div><div class="ph" style="width:72%;height:15px"></div></div></article>
+      <article class="vcard skel"><div class="ph" style="width:100%;aspect-ratio:16/9"></div><div class="vbody"><div class="ph" style="width:42%;height:12px;margin-bottom:16px"></div><div class="ph" style="width:100%;height:15px;margin-bottom:9px"></div><div class="ph" style="width:72%;height:15px"></div></div></article>
+    </div>
+    <p style="margin-top:22px"><a href="https://www.youtube.com/@PerformanceParaResultados" target="_blank" rel="noopener" style="color:var(--green);font-weight:700">Ver todos os episódios no YouTube &#8599;</a></p>
   </div>
 </section>
 
@@ -323,5 +368,6 @@
 </footer>
 
 <script src="app.js"></script>
+<script src="youtube-feed.js" defer></script>
 </body>
 </html>
