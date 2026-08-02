@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="metris-icon.png">
+<title>Verificação de vídeos e feeds</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  main{max-width:1000px;margin:0 auto;padding:48px 22px 80px}
+  h1{font-size:30px;margin:0 0 8px}
+  .lead{color:var(--muted);margin:0 0 34px}
+  h2{font-size:20px;margin:38px 0 16px}
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-soft)}
+  td img{width:96px;height:54px;object-fit:cover;border-radius:6px;display:block;background:#0d1526}
+  .tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
+  .ok{background:rgba(43,212,111,.16);color:var(--green)}
+  .bad{background:rgba(46,99,240,.18);color:#93b3ff}
+  .wait{color:var(--muted-soft)}
+  pre{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:12.5px;line-height:1.5;max-height:340px}
+  code{color:var(--green)}
+  .onde{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Verificação de vídeos e feeds</h1>
+  <p class="lead">Página interna, fora do sitemap e marcada como noindex. Abra ela no site publicado para checar se todos os vídeos embutidos existem e se os dois feeds do YouTube estão respondendo.</p>
+
+  <h2>1. Vídeos embutidos no site</h2>
+  <p class="lead">A verificação carrega a capa oficial de cada vídeo. Quando o vídeo não existe, foi removido ou está privado, o YouTube devolve uma imagem cinza de 120 pixels, e é isso que o teste detecta.</p>
+  <table id="tabela">
+    <thead><tr><th>Capa</th><th>ID</th><th>Onde aparece</th><th>Situação</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>2. Feed do canal de conteúdo</h2>
+  <p class="lead"><code>/api/youtube?canal=cristiano&amp;debug=1</code></p>
+  <pre id="r1" class="wait">consultando...</pre>
+
+  <h2>3. Feed do canal do podcast</h2>
+  <p class="lead"><code>/api/youtube?canal=podcast&amp;debug=1</code></p>
+  <pre id="r2" class="wait">consultando...</pre>
+
+<script>
+var VIDEOS = [
+  { id: '7xTbIm7Wzyk', onde: '/plano-de-midia-para-ecommerce' },
+  { id: 'BJr2Sisg-t8', onde: 'home, /cases, /case-vinhos-collection, /diagnostico, /mentoria' },
+  { id: 'OCrE3Uc0Grg', onde: '/calendario-de-vendas-2026-ecommerce' },
+  { id: 'SKXQyaMwjg4', onde: 'home, /diagnostico' },
+  { id: 'qPC-Bye-owo', onde: 'home, /cases, /case-malacara, /diagnostico, /mentoria' }
+];
+
+var tbody = document.querySelector('#tabela tbody');
+VIDEOS.forEach(function (v) {
+  var tr = document.createElement('tr');
+  var tdImg = document.createElement('td');
+  var img = document.createElement('img');
+  img.src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg';
+  img.alt = '';
+  tdImg.appendChild(img);
+
+  var tdId = document.createElement('td');
+  var a = document.createElement('a');
+  a.href = 'https://www.youtube.com/watch?v=' + v.id;
+  a.target = '_blank'; a.rel = 'noopener';
+  a.style.color = 'var(--green)'; a.style.fontWeight = '700';
+  a.textContent = v.id;
+  tdId.appendChild(a);
+
+  var tdOnde = document.createElement('td');
+  tdOnde.className = 'onde';
+  tdOnde.textContent = v.onde;
+
+  var tdSt = document.createElement('td');
+  var tag = document.createElement('span');
+  tag.className = 'wait';
+  tag.textContent = 'verificando...';
+  tdSt.appendChild(tag);
+
+  img.addEventListener('load', function () {
+    var invalido = img.naturalWidth <= 120;
+    tag.className = 'tag ' + (invalido ? 'bad' : 'ok');
+    tag.textContent = invalido ? 'indisponível' : 'ok (' + img.naturalWidth + 'x' + img.naturalHeight + ')';
+  });
+  img.addEventListener('error', function () {
+    tag.className = 'tag bad';
+    tag.textContent = 'capa não carregou';
+  });
+
+  tr.appendChild(tdImg); tr.appendChild(tdId); tr.appendChild(tdOnde); tr.appendChild(tdSt);
+  tbody.appendChild(tr);
+});
+
+function consultar(canal, alvo) {
+  var el = document.getElementById(alvo);
+  fetch('/api/youtube?canal=' + canal + '&debug=1')
+    .then(function (r) { return r.text(); })
+    .then(function (t) {
+      el.className = '';
+      try { el.textContent = JSON.stringify(JSON.parse(t), null, 2); }
+      catch (e) { el.textContent = t; }
+    })
+    .catch(function (e) {
+      el.className = '';
+      el.textContent = 'erro na chamada: ' + e;
+    });
+}
+consultar('cristiano', 'r1');
+consultar('podcast', 'r2');
+</script>
+</main>
+</body>
+</html>

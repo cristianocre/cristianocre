@@ -9,15 +9,16 @@
 // Só os canais da lista abaixo são aceitos. Isso evita que a função vire
 // um proxy aberto para qualquer canal do YouTube.
 
-// Observação importante sobre o podcast:
-// o canal Performance para Resultados (UClDIQjliJFirXWqkXQ7fPRA) tem o feed de
-// uploads vazio, porque os episódios são publicados no canal principal do
-// Cristiano. Por isso o podcast lê o feed do canal principal e filtra pelo
-// título. Se um dia os vídeos passarem a ser enviados no canal do podcast,
-// basta trocar o handle por channelId: 'UClDIQjliJFirXWqkXQ7fPRA' e apagar o filtro.
+// Os dois canais são independentes e não se misturam:
+//   cristiano -> conteúdo, aulas e cortes (@cristianocre)
+//   podcast   -> Performance para Resultados (@PerformanceParaResultados)
+//
+// Para cada canal a função tenta o feed do canal e, se ele vier vazio, tenta o
+// feed da playlist de uploads (o mesmo conteúdo, por outro endereço). Alguns
+// canais do YouTube respondem em um e não no outro.
 const CANAIS = {
   cristiano: { handle: 'cristianocre' },
-  podcast: { handle: 'cristianocre', filtro: /podcast/i, agruparPorEpisodio: true },
+  podcast: { channelId: 'UClDIQjliJFirXWqkXQ7fPRA', handle: 'PerformanceParaResultados' },
 };
 
 const PADRAO = 'cristiano';
@@ -81,20 +82,46 @@ module.exports = async (req, res) => {
   const canal = CANAIS[chave];
 
   try {
+    const debug = !!(req.query && req.query.debug);
     const emCache = CACHE[chave];
-    if (emCache && emCache.videos && Date.now() - emCache.at < TTL) {
+    if (!debug && emCache && emCache.videos && Date.now() - emCache.at < TTL) {
       res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=86400');
       return res.status(200).json({ canal: chave, videos: emCache.videos, cached: true });
     }
 
     const channelId = canal.channelId || (await resolveChannelId(canal.handle));
-    const feedRes = await fetch(
+
+    // Dois endereços para o mesmo conteúdo. Alguns canais respondem em um e não
+    // no outro, então tentamos o feed do canal e depois o da playlist de uploads.
+    const enderecos = [
       'https://www.youtube.com/feeds/videos.xml?channel_id=' + channelId,
-      { headers: { 'User-Agent': 'Mozilla/5.0' } }
-    );
-    const xml = await feedRes.text();
-    const videos = selecionar(parseFeed(xml), canal);
-    if (!videos.length) throw new Error('feed vazio ou sem itens que passem no filtro');
+      'https://www.youtube.com/feeds/videos.xml?playlist_id=UU' + channelId.slice(2),
+    ];
+
+    const tentativas = [];
+    let videos = [];
+    for (const endereco of enderecos) {
+      let status = 0, tamanho = 0;
+      try {
+        const feedRes = await fetch(endereco, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+        status = feedRes.status;
+        const xml = await feedRes.text();
+        tamanho = xml.length;
+        const achados = selecionar(parseFeed(xml), canal);
+        tentativas.push({ endereco, status, tamanho, itens: achados.length });
+        if (achados.length) { videos = achados; break; }
+      } catch (e) {
+        tentativas.push({ endereco, status, tamanho, erro: String(e && e.message || e) });
+      }
+    }
+
+    // /api/youtube?canal=podcast&debug=1 mostra o que cada endereço devolveu.
+    if (debug) {
+      res.setHeader('Cache-Control', 'no-store');
+      return res.status(200).json({ canal: chave, channelId, tentativas, itens: videos.length, videos });
+    }
+
+    if (!videos.length) throw new Error('feed vazio nos dois endereços');
 
     CACHE[chave] = { at: Date.now(), videos };
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=86400');
