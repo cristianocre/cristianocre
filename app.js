@@ -58,12 +58,37 @@ function bindLeadForm(form){
   hp.setAttribute('aria-hidden','true');
   hp.style.cssText='position:absolute;left:-9999px;width:1px;height:1px;opacity:0';
   form.appendChild(hp);
+
+  // Campos opcionais: quando existem, o formulário passa a capturar nome e telefone.
+  const campoNome=form.querySelector('input[name=nome]');
+  const campoTel=form.querySelector('input[name=telefone]');
+  if(campoTel){
+    campoTel.addEventListener('input',()=>{
+      let v=campoTel.value.replace(/\D/g,'').slice(0,11);
+      if(v.length>10) v=v.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');
+      else if(v.length>6) v=v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+      else if(v.length>2) v=v.replace(/(\d{2})(\d{0,5})/,'($1) $2');
+      else if(v.length) v=v.replace(/(\d{0,2})/,'($1');
+      campoTel.value=v;
+    });
+  }
+
+  function aviso(texto){
+    let msg=form.querySelector('.form-msg');
+    if(!msg){ msg=document.createElement('p'); msg.className='form-msg'; msg.style.cssText='color:#F36D6D;font-size:13.5px;margin-top:8px'; form.appendChild(msg); }
+    msg.textContent=texto;
+  }
+
   form.addEventListener('submit', async (ev)=>{
     ev.preventDefault();
     const input=form.querySelector('input[type=email]');
     const btn=form.querySelector('button[type=submit]');
     const email=(input.value||'').trim();
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ input.focus(); return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ input.focus(); aviso('Confira o e-mail, ele parece incompleto.'); return; }
+    const nome=campoNome?(campoNome.value||'').trim():'';
+    const fone=campoTel?(campoTel.value||'').replace(/\D/g,''):'';
+    if(campoNome && nome.length<2){ campoNome.focus(); aviso('Me diz o seu nome.'); return; }
+    if(campoTel && fone.length<10){ campoTel.focus(); aviso('Preciso do WhatsApp com DDD.'); return; }
     const material=form.dataset.material||'Newsletter';
     const redirect=form.dataset.redirect||'';
     const label=btn.innerHTML;
@@ -72,7 +97,7 @@ function bindLeadForm(form){
       const resp=await fetch('/api/inscrever',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({email,material,empresa:hp.value,origem:(location.pathname+location.search)})
+        body:JSON.stringify({nome,email,telefone:fone,material,empresa:hp.value,origem:(location.pathname+location.search)})
       });
       const data=await resp.json().catch(()=>({ok:false}));
       if(data.ok){
@@ -89,9 +114,7 @@ function bindLeadForm(form){
       throw new Error(data.error||'falha');
     }catch(e){
       btn.disabled=false; btn.innerHTML=label;
-      let msg=form.querySelector('.form-msg');
-      if(!msg){ msg=document.createElement('p'); msg.className='form-msg'; msg.style.cssText='color:#F36D6D;font-size:13.5px;margin-top:8px'; form.appendChild(msg); }
-      msg.textContent='Não consegui enviar agora. Tente de novo em instantes.';
+      aviso('Não consegui enviar agora. Tente de novo em instantes.');
     }
   });
 }
