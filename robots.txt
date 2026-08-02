@@ -1,4 +1,87 @@
+# robots.txt - cristianocre.com
+# Conteúdo sobre e-commerce D2C, marketing de performance, mídia paga,
+# margem, retenção e gestão, por Cristiano Creczyenski, CEO da Metris.
+# Resumo do site para modelos de linguagem: /llms.txt
+
+# ---------------------------------------------------------------
+# Buscadores tradicionais
+# ---------------------------------------------------------------
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# ---------------------------------------------------------------
+# Buscadores e assistentes com IA
+# Liberados de propósito: o objetivo é ser citado como fonte.
+# ---------------------------------------------------------------
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: MistralAI-User
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# ---------------------------------------------------------------
+# Regra geral
+# ---------------------------------------------------------------
 User-agent: *
 Allow: /
+Disallow: /verificar-videos
+Disallow: /api/
 
 Sitemap: https://www.cristianocre.com/sitemap.xml
