@@ -25,9 +25,10 @@
     } catch (e) { return ''; }
   }
 
-  function videoCard(v, rotulo) {
+  function videoCard(v, rotulo, layout) {
+    var quote = layout === 'quote';
     var card = document.createElement('article');
-    card.className = 'vcard reveal in';
+    card.className = (quote ? 'quote' : 'vcard') + ' reveal in';
 
     var btn = document.createElement('button');
     btn.className = 'vthumb';
@@ -46,8 +47,6 @@
       btn.replaceWith(ifr);
     });
 
-    var body = document.createElement('div');
-    body.className = 'vbody';
     var date = document.createElement('span');
     date.className = 'vdate';
     date.textContent = fmtDate(v.date);
@@ -59,12 +58,21 @@
     go.target = '_blank';
     go.rel = 'noopener';
     go.innerHTML = rotulo + ' <span class="ar">→</span>';
-    body.appendChild(date);
-    body.appendChild(h3);
-    body.appendChild(go);
 
     card.appendChild(btn);
-    card.appendChild(body);
+    if (quote) {
+      // Mesmo formato visual dos cards de depoimento: capa, data, título e link.
+      card.appendChild(date);
+      card.appendChild(h3);
+      card.appendChild(go);
+    } else {
+      var body = document.createElement('div');
+      body.className = 'vbody';
+      body.appendChild(date);
+      body.appendChild(h3);
+      body.appendChild(go);
+      card.appendChild(body);
+    }
     return card;
   }
 
@@ -74,10 +82,11 @@
     var titulo = track.getAttribute('data-yt-titulo') || 'Veja os vídeos no canal';
     var cta = track.getAttribute('data-yt-cta') || 'Abrir o canal';
     var rotulo = track.getAttribute('data-yt-rotulo') || 'Assistir no YouTube';
+    var layout = track.getAttribute('data-yt-layout') || 'vcard';
 
     function render(videos) {
       track.innerHTML = '';
-      videos.forEach(function (v) { track.appendChild(videoCard(v, rotulo)); });
+      videos.forEach(function (v) { track.appendChild(videoCard(v, rotulo, layout)); });
       track.setAttribute('aria-busy', 'false');
     }
 
@@ -85,7 +94,7 @@
       track.innerHTML = '';
       track.setAttribute('aria-busy', 'false');
       var card = document.createElement('article');
-      card.className = 'vcard';
+      card.className = layout === 'quote' ? 'quote' : 'vcard';
       card.style.cssText = 'flex:0 0 100%;max-width:560px;margin:0 auto;align-items:center;justify-content:center;text-align:center;padding:44px 30px';
       card.innerHTML = '<h3 style="margin:0 0 10px;font-size:20px">' + titulo + '</h3>' +
         '<p style="color:var(--muted);margin:0 0 22px;font-size:15.5px">Confira os conteúdos mais recentes direto no YouTube.</p>' +

@@ -39,7 +39,7 @@ document.querySelectorAll('[data-car]').forEach(btn=>{
   const alvo=document.getElementById(btn.getAttribute('data-car'));
   if(!alvo)return;
   btn.addEventListener('click',()=>{
-    const passo=alvo.classList.contains('yt-carousel')?380:360;
+    const passo=(alvo.classList.contains('yt-carousel')||alvo.classList.contains('pod-carousel'))?402:360;
     alvo.scrollBy({left:btn.getAttribute('data-dir')==='prev'?-passo:passo,behavior:'smooth'});
   });
 });
