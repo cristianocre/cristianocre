@@ -564,3 +564,16 @@ footer{border-top:1px solid var(--line-soft);margin-top:40px;padding:64px 0 30px
 .mat-itens{list-style:none;padding:0;margin:20px 0 26px;display:grid;gap:9px}
 .mat-itens li{position:relative;padding-left:20px;color:var(--muted);font-size:14.5px}
 .mat-itens li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:50%;background:var(--green)}
+
+/* Lista de episódios do podcast quando ainda há poucos artigos publicados */
+.ilist.solo{grid-template-columns:1fr;max-width:860px}
+.ilist.solo .icard{flex-direction:row;align-items:stretch}
+.ilist.solo .ithumb{flex:0 0 44%;display:flex}
+.ilist.solo .ithumb picture{display:block;width:100%}
+.ilist.solo .ithumb img{height:100%;aspect-ratio:auto;object-fit:cover}
+.ilist.solo .ibody{justify-content:center}
+@media (max-width:760px){
+  .ilist.solo .icard{flex-direction:column}
+  .ilist.solo .ithumb{flex:none}
+  .ilist.solo .ithumb img{aspect-ratio:16/9}
+}
