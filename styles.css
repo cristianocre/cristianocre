@@ -577,3 +577,12 @@ footer{border-top:1px solid var(--line-soft);margin-top:40px;padding:64px 0 30px
   .ilist.solo .ithumb{flex:none}
   .ilist.solo .ithumb img{aspect-ratio:16/9}
 }
+
+/* Bloco "continue lendo" dos artigos de cluster */
+.post .related{margin:44px 0 8px;padding:24px 26px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+.post .related h3{margin:0 0 14px;font-size:16px;letter-spacing:.01em}
+.post .related ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.post .related li{margin:0}
+.post .related a{display:inline-flex;align-items:center;gap:8px;color:var(--green);font-weight:600;font-size:15px;text-decoration:none}
+.post .related a::before{content:"→";color:var(--green);font-weight:700}
+.post .related a:hover{text-decoration:underline}
