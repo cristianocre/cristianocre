@@ -56,6 +56,12 @@ async function lerCorpo(req) {
   try { return JSON.parse(Buffer.concat(pedacos).toString('utf8')); } catch (e) { return {}; }
 }
 
+const SEGMENTOS = [
+  'Moda e calçados', 'Móveis e decoração', 'Beleza e cosméticos',
+  'Eletrônicos e informática', 'Saúde e suplementos', 'Alimentos e bebidas',
+  'Vinícolas e adegas', 'Pet', 'Esporte e fitness', 'Varejo multimarcas', 'Outro'
+];
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -105,26 +111,47 @@ module.exports = async function handler(req, res) {
   const telefone = formatarTelefone(corpo.telefone);
   const material = limpar(corpo.material, 100) || 'Newsletter';
   const origem = limpar(corpo.origem, 300) || '/';
+  const bruto = limpar(corpo.segmento, 80);
+  const segmento = SEGMENTOS.includes(bruto) ? bruto : '';
 
-  const properties = {
+  const base_properties = {
     'E-mail': { title: [{ text: { content: email } }] },
     'Material': { select: { name: material } },
     'Origem': { rich_text: [{ text: { content: origem } }] },
     'Status': { select: { name: 'Novo' } }
   };
-  if (nome) properties['Nome'] = { rich_text: [{ text: { content: nome } }] };
-  if (telefone) properties['Telefone'] = { phone_number: telefone };
+  if (nome) base_properties['Nome'] = { rich_text: [{ text: { content: nome } }] };
+  if (telefone) base_properties['Telefone'] = { phone_number: telefone };
 
-  try {
-    const r = await fetch('https://api.notion.com/v1/pages', {
+  const properties = { ...base_properties };
+  if (segmento) properties['Segmento'] = { select: { name: segmento } };
+
+  function enviar(props) {
+    return fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token.valor}`,
         'Notion-Version': NOTION_VERSION,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ parent: { database_id: base.valor }, properties })
+      body: JSON.stringify({ parent: { database_id: base.valor }, properties: props })
     });
+  }
+
+  try {
+    let r = await enviar(properties);
+    let comColunaSegmento = Boolean(segmento);
+
+    // Se a base ainda não tem a coluna "Segmento", o Notion recusa a escrita inteira.
+    // Nesse caso regrava sem a coluna, com o segmento dentro de "Origem".
+    // O lead nunca se perde por causa de coluna faltando.
+    if (!r.ok && segmento) {
+      const alternativa = { ...base_properties };
+      alternativa['Origem'] = { rich_text: [{ text: { content: `${origem} · Segmento: ${segmento}`.slice(0, 300) } }] };
+      r = await enviar(alternativa);
+      comColunaSegmento = false;
+    }
+
     const dados = await r.json().catch(() => ({}));
     if (!r.ok) {
       return res.status(502).json({
@@ -137,7 +164,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       id: dados.id || null,
-      gravou: { nome: Boolean(nome), telefone: Boolean(telefone) }
+      gravou: { nome: Boolean(nome), telefone: Boolean(telefone), segmento: comColunaSegmento }
     });
   } catch (e) {
     return res.status(500).json({ ok: false, error: 'falha_no_envio', detalhe: String(e).slice(0, 200) });

@@ -62,6 +62,7 @@ function bindLeadForm(form){
   // Campos opcionais: quando existem, o formulário passa a capturar nome e telefone.
   const campoNome=form.querySelector('input[name=nome]');
   const campoTel=form.querySelector('input[name=telefone]');
+  const campoSeg=form.querySelector('select[name=segmento]');
   if(campoTel){
     campoTel.addEventListener('input',()=>{
       let v=campoTel.value.replace(/\D/g,'').slice(0,11);
@@ -89,6 +90,8 @@ function bindLeadForm(form){
     const fone=campoTel?(campoTel.value||'').replace(/\D/g,''):'';
     if(campoNome && nome.length<2){ campoNome.focus(); aviso('Me diz o seu nome.'); return; }
     if(campoTel && fone.length<10){ campoTel.focus(); aviso('Preciso do WhatsApp com DDD.'); return; }
+    const segmento=campoSeg?(campoSeg.value||'').trim():'';
+    if(campoSeg && !segmento){ campoSeg.focus(); aviso('Escolhe o seu segmento.'); return; }
     const material=form.dataset.material||'Newsletter';
     const redirect=form.dataset.redirect||'';
     const label=btn.innerHTML;
@@ -97,10 +100,20 @@ function bindLeadForm(form){
       const resp=await fetch('/api/inscrever',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({nome,email,telefone:fone,material,empresa:hp.value,origem:(location.pathname+location.search)})
+        body:JSON.stringify({nome,email,telefone:fone,segmento,material,empresa:hp.value,origem:(location.pathname+location.search)})
       });
       const data=await resp.json().catch(()=>({ok:false}));
       if(data.ok){
+        // Evento: em vez de redirecionar, pede os dois passos que faltam (grupo + canal)
+        const grupo=form.dataset.grupo||'', canal=form.dataset.canal||'';
+        if(grupo||canal){
+          track('inscricao_evento',{evento:material,segmento:segmento},'Lead',{content_name:material});
+          form.innerHTML=eventoSuccess(grupo,canal);
+          form.querySelectorAll('[data-ev-cta]').forEach(a=>{
+            a.addEventListener('click',()=> track('pos_inscricao_'+a.dataset.evCta,{evento:material},'Contact',{content_name:a.dataset.evCta}));
+          });
+          return;
+        }
         if(material==='Newsletter'){ track('inscricao_newsletter',{origem:location.pathname},'Subscribe',{}); }
         else { track('lead_material',{material:material},'Lead',{content_name:material}); }
         if(redirect){
@@ -118,7 +131,7 @@ function bindLeadForm(form){
     }
   });
 }
-document.querySelectorAll('form.mform,form.news-form').forEach(bindLeadForm);
+document.querySelectorAll('form.mform,form.news-form,form.evform').forEach(bindLeadForm);
 
 // Bloco de sucesso (identidade visual)
 function leadSuccess(title, sub, redirect){
@@ -126,6 +139,17 @@ function leadSuccess(title, sub, redirect){
   return `<div class="form-success" role="status" aria-live="polite">`
     + `<span class="fs-check"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>`
     + `<p class="fs-title">${title}</p><p class="fs-sub">${sub}</p>${link}</div>`;
+}
+
+// Sucesso de inscrição em evento: os dois passos que faltam
+function eventoSuccess(grupo, canal){
+  const bGrupo = grupo ? `<a class="btn btn-green btn-block" data-ev-cta="grupo" href="${grupo}" target="_blank" rel="noopener">Entrar no grupo do WhatsApp <span class="ar">&rarr;</span></a>` : '';
+  const bCanal = canal ? `<a class="btn btn-ghost btn-block" data-ev-cta="canal" href="${canal}" target="_blank" rel="noopener">Inscrever-se no canal do YouTube <span class="ar">&rarr;</span></a>` : '';
+  return `<div class="form-success" role="status" aria-live="polite">`
+    + `<span class="fs-check"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>`
+    + `<p class="fs-title">Inscrição confirmada!</p>`
+    + `<p class="fs-sub">Faltam dois passos. O link da transmissão sai no grupo, e a live acontece no canal &mdash; inscreva-se para ser avisado quando entrar no ar.</p>`
+    + `<div class="fs-actions">${bGrupo}${bCanal}</div></div>`;
 }
 
 // Botão flutuante de WhatsApp (todas as páginas)
