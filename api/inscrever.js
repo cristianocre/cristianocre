@@ -9,10 +9,14 @@
 //   material  opcional, default "Newsletter"
 //   origem    opcional, caminho da página
 //   empresa   honeypot: se vier preenchido, é bot e a requisição é descartada
+//   event_id  opcional, id do evento do Pixel — usado para deduplicar com a CAPI
+//   event_name opcional, 'Lead' (padrão), 'Subscribe' ou 'LeadPopup'
 //
 // Variáveis de ambiente aceitas (a primeira encontrada é usada):
 //   token: NOTION_TOKEN | NOTION_API_KEY | NOTION_SECRET | NOTION_KEY
 //   base:  NOTION_DB | NOTION_DATABASE_ID | NOTION_DB_ID | NOTION_LEADS_DB
+
+const { enviarEvento, configurado: capiConfigurada } = require('./_meta.js');
 
 const NOMES_TOKEN = ['NOTION_TOKEN', 'NOTION_API_KEY', 'NOTION_SECRET', 'NOTION_KEY'];
 const NOMES_DB = ['NOTION_DB', 'NOTION_DATABASE_ID', 'NOTION_DB_ID', 'NOTION_LEADS_DB'];
@@ -84,7 +88,8 @@ module.exports = async function handler(req, res) {
       tokenEnv: token.nome,
       dbEnv: base.nome,
       campos: ['E-mail', 'Nome', 'Telefone', 'Material', 'Origem', 'Status'],
-      versao: '2026-08-01'
+      capi: capiConfigurada(),
+      versao: '2026-09-09'
     });
   }
 
@@ -113,6 +118,11 @@ module.exports = async function handler(req, res) {
   const origem = limpar(corpo.origem, 300) || '/';
   const bruto = limpar(corpo.segmento, 80);
   const segmento = SEGMENTOS.includes(bruto) ? bruto : '';
+
+  // Deduplicação com o Pixel: o navegador manda o mesmo event_id que usou no fbq().
+  const eventId = limpar(corpo.event_id, 64);
+  const brutoEvento = limpar(corpo.event_name, 40);
+  const eventoMeta = ['Lead', 'Subscribe', 'LeadPopup'].includes(brutoEvento) ? brutoEvento : 'Lead';
 
   const base_properties = {
     'E-mail': { title: [{ text: { content: email } }] },
@@ -161,10 +171,21 @@ module.exports = async function handler(req, res) {
         detalhe: dados && dados.message ? String(dados.message).slice(0, 300) : ''
       });
     }
+    // CAPI: só depois que o lead foi gravado de verdade. enviarEvento nunca lança
+    // e tem timeout curto, então a resposta ao navegador não fica presa esperando a Meta.
+    const capi = await enviarEvento(req, {
+      event_name: eventoMeta,
+      event_id: eventId,
+      event_source_url: origem ? `https://www.cristianocre.com${origem.startsWith('/') ? origem : '/' + origem}` : '',
+      custom_data: { content_name: material },
+      pessoa: { email, telefone, nome }
+    });
+
     return res.status(200).json({
       ok: true,
       id: dados.id || null,
-      gravou: { nome: Boolean(nome), telefone: Boolean(telefone), segmento: comColunaSegmento }
+      gravou: { nome: Boolean(nome), telefone: Boolean(telefone), segmento: comColunaSegmento },
+      capi: capi.ok ? 'enviado' : capi.motivo
     });
   } catch (e) {
     return res.status(500).json({ ok: false, error: 'falha_no_envio', detalhe: String(e).slice(0, 200) });

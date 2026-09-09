@@ -1,7 +1,65 @@
-// ===== Tagueamento (GA4 + Meta Pixel) =====
-function track(gaEvent, gaParams, fbEvent, fbParams){
+// ===== Tagueamento (GA4 + Meta Pixel + API de Conversoes) =====
+
+// Precisa bater com o fbq('init') que esta no <head> das paginas.
+const CC_PIXEL='942431053282816';
+
+// Eventos padrao da Meta vao em fbq('track'); os nossos vao em fbq('trackCustom').
+const CC_EVENTOS_PADRAO=['PageView','Lead','Subscribe','Contact','Schedule','ViewContent','CompleteRegistration','InitiateCheckout','Purchase'];
+
+// Id unico por evento. E ele que deixa a Meta juntar o disparo do navegador com o
+// do servidor e contar UMA conversao, em vez de duas.
+function novoEventId(){
+  try{ if(window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID(); }catch(e){}
+  return 'e-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);
+}
+
+// Advanced matching: entrega nome, e-mail e telefone ao Pixel, que normaliza e
+// aplica SHA-256 no proprio navegador. Nada em texto puro sai daqui.
+function identificar(p){
+  try{
+    if(typeof fbq!=='function' || !p) return;
+    const d={};
+    if(p.email) d.em=String(p.email).trim().toLowerCase();
+    if(p.telefone){
+      const so=String(p.telefone).replace(/\D/g,'');
+      if(so.length>=10) d.ph=(so.length<=11?'55'+so:so);
+    }
+    const partes=String(p.nome||'').trim().split(/\s+/).filter(Boolean);
+    if(partes.length){ d.fn=partes[0]; if(partes.length>1) d.ln=partes[partes.length-1]; }
+    if(Object.keys(d).length) fbq('init', CC_PIXEL, d);
+  }catch(e){}
+}
+
+// Dispara no GA4 e no Pixel. Devolve o event_id para quem precisa deduplicar.
+function track(gaEvent, gaParams, fbEvent, fbParams, eventId){
+  const id=eventId||novoEventId();
   try{ if(typeof gtag==='function') gtag('event', gaEvent, gaParams||{}); }catch(e){}
-  try{ if(typeof fbq==='function') fbq('track', fbEvent, fbParams||{}); }catch(e){}
+  try{
+    if(typeof fbq==='function'){
+      const metodo=CC_EVENTOS_PADRAO.indexOf(fbEvent)>=0?'track':'trackCustom';
+      fbq(metodo, fbEvent, fbParams||{}, {eventID:id});
+    }
+  }catch(e){}
+  return id;
+}
+
+// Igual ao track, mas espelha o evento no servidor (API de Conversoes).
+// Para os cliques, que nao passam por /api/inscrever. O keepalive garante que a
+// requisicao sobrevive a navegacao quando o clique leva a pessoa para fora do site.
+function trackServidor(gaEvent, gaParams, fbEvent, fbParams){
+  const id=track(gaEvent, gaParams, fbEvent, fbParams);
+  try{
+    fetch('/api/capi',{
+      method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true,
+      body:JSON.stringify({
+        event_name:fbEvent,
+        event_id:id,
+        content_name:(fbParams&&fbParams.content_name)||'',
+        event_source_url:location.href
+      })
+    }).catch(function(){});
+  }catch(e){}
+  return id;
 }
 
 // Nav background on scroll
@@ -94,28 +152,33 @@ function bindLeadForm(form){
     if(campoSeg && !segmento){ campoSeg.focus(); aviso('Escolhe o seu segmento.'); return; }
     const material=form.dataset.material||'Newsletter';
     const redirect=form.dataset.redirect||'';
+    const grupo=form.dataset.grupo||'', canal=form.dataset.canal||'';
+    // Newsletter e Subscribe; material e inscricao em evento sao Lead.
+    const eventoMeta=(!grupo && !canal && material==='Newsletter')?'Subscribe':'Lead';
+    // Um id so, usado no fbq daqui e na CAPI la no servidor: uma conversao, nao duas.
+    const eventId=novoEventId();
+    identificar({nome,email,telefone:fone});
     const label=btn.innerHTML;
     btn.disabled=true; btn.innerHTML='Enviando…';
     try{
       const resp=await fetch('/api/inscrever',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({nome,email,telefone:fone,segmento,material,empresa:hp.value,origem:(location.pathname+location.search)})
+        body:JSON.stringify({nome,email,telefone:fone,segmento,material,empresa:hp.value,origem:(location.pathname+location.search),event_id:eventId,event_name:eventoMeta})
       });
       const data=await resp.json().catch(()=>({ok:false}));
       if(data.ok){
         // Evento: em vez de redirecionar, pede os dois passos que faltam (grupo + canal)
-        const grupo=form.dataset.grupo||'', canal=form.dataset.canal||'';
         if(grupo||canal){
-          track('inscricao_evento',{evento:material,segmento:segmento},'Lead',{content_name:material});
+          track('inscricao_evento',{evento:material,segmento:segmento},'Lead',{content_name:material},eventId);
           form.innerHTML=eventoSuccess(grupo,canal);
           form.querySelectorAll('[data-ev-cta]').forEach(a=>{
-            a.addEventListener('click',()=> track('pos_inscricao_'+a.dataset.evCta,{evento:material},'Contact',{content_name:a.dataset.evCta}));
+            a.addEventListener('click',()=> trackServidor('pos_inscricao_'+a.dataset.evCta,{evento:material},'Contact',{content_name:a.dataset.evCta}));
           });
           return;
         }
-        if(material==='Newsletter'){ track('inscricao_newsletter',{origem:location.pathname},'Subscribe',{}); }
-        else { track('lead_material',{material:material},'Lead',{content_name:material}); }
+        if(material==='Newsletter'){ track('inscricao_newsletter',{origem:location.pathname},'Subscribe',{},eventId); }
+        else { track('lead_material',{material:material},'Lead',{content_name:material},eventId); }
         if(redirect){
           form.innerHTML=leadSuccess('Pronto! Seu material está liberado.','Estamos te levando para o conteúdo…',redirect);
           setTimeout(()=>{ window.location.href=redirect; }, 2000);
@@ -160,17 +223,17 @@ function eventoSuccess(grupo, canal){
   a.className='wa-float';
   a.setAttribute('aria-label','Falar no WhatsApp');
   a.innerHTML='<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M17.5 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.26-.47-2.4-1.48-.89-.79-1.49-1.78-1.66-2.07-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.53.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.07 4.49.71.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.45 9.45 0 01-4.81-1.32l-.35-.2-3.57.94.95-3.48-.23-.36a9.43 9.43 0 01-1.45-5.03c0-5.22 4.25-9.46 9.47-9.46 2.53 0 4.9.99 6.69 2.78a9.4 9.4 0 012.77 6.69c0 5.22-4.25 9.46-9.46 9.46zm8.05-17.52A11.34 11.34 0 0012.04.62C5.79.62.67 5.73.67 12c0 2 .53 3.96 1.53 5.69L.6 23.38l5.83-1.53a11.34 11.34 0 005.6 1.43h.01c6.26 0 11.36-5.1 11.36-11.37 0-3.04-1.18-5.89-3.33-8.04z"/></svg>';
-  a.addEventListener('click',()=> track('clique_whatsapp',{origem:'botao_flutuante'},'Contact',{content_name:'WhatsApp flutuante'}));
+  a.addEventListener('click',()=> trackServidor('clique_whatsapp',{origem:'botao_flutuante'},'Contact',{content_name:'WhatsApp flutuante'}));
   document.body.appendChild(a);
 })();
 
 // Conversão principal: clique para agendar o diagnóstico
 document.querySelectorAll('a[href*="metris.digital/form"]').forEach(a=>{
-  a.addEventListener('click',()=> track('agendar_diagnostico',{origem:location.pathname},'Schedule',{content_name:'Diagnóstico 360'}));
+  a.addEventListener('click',()=> trackServidor('agendar_diagnostico',{origem:location.pathname},'Schedule',{content_name:'Diagnóstico 360'}));
 });
 // Clique no WhatsApp da mentoria
 document.querySelectorAll('a[href*="wa.me"]:not(.wa-float)').forEach(a=>{
-  a.addEventListener('click',()=> track('clique_whatsapp',{origem:location.pathname},'Contact',{content_name:'Mentoria WhatsApp'}));
+  a.addEventListener('click',()=> trackServidor('clique_whatsapp',{origem:location.pathname},'Contact',{content_name:'Mentoria WhatsApp'}));
 });
 
 // Depoimentos em vídeo: troca o thumbnail pelo player ao clicar
@@ -279,7 +342,7 @@ document.querySelectorAll('.vthumb').forEach(btn=>{
     document.body.style.overflow = 'hidden';
     store.set('cc_xp_visto', String(Date.now()));
     setTimeout(()=>{ const i=form.querySelector('input'); if(i) i.focus({preventScroll:true}); }, 120);
-    track('popup_saida_exibido', {variante:key, origem:path}, 'ViewContent', {content_name:V.material});
+    trackServidor('popup_saida_exibido', {variante:key, origem:path}, 'ViewContent', {content_name:V.material});
   }
   function fechar(){
     if (!aberto) return;
@@ -321,15 +384,22 @@ document.querySelectorAll('.vthumb').forEach(btn=>{
     btn.disabled = true; btn.innerHTML = 'Enviando…';
 
     const url = 'https://wa.me/'+WA+'?text='+encodeURIComponent(V.wa(nome.split(' ')[0]));
+
+    // Evento proprio (LeadPopup), separado do Lead da pagina. O pop-up oferece o
+    // Diagnostico, nao o que a pagina estava vendendo: juntar os dois sujaria o
+    // sinal de otimizacao das campanhas que apontam para a pagina.
+    const eventId = novoEventId();
+    identificar({ nome, email, telefone: fone });
+
     try{
       await fetch('/api/inscrever', {
         method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true,
-        body: JSON.stringify({ nome, email, telefone: fone, material: V.material, origem: path, empresa: form.empresa.value })
+        body: JSON.stringify({ nome, email, telefone: fone, material: V.material, origem: path, empresa: form.empresa.value, event_id: eventId, event_name: 'LeadPopup' })
       });
     }catch(e){}
 
     store.set('cc_xp_lead', String(Date.now()));
-    track('lead_popup_saida', {variante:key, origem:path}, 'Lead', {content_name:V.material});
+    track('lead_popup_saida', {variante:key, origem:path}, 'LeadPopup', {content_name:V.material}, eventId);
     if (aba) aba.location.href = url; else window.location.href = url;
     form.innerHTML = leadSuccess('Recebi seus dados!','Estamos te levando para o WhatsApp.', url);
     btn.innerHTML = rotulo;
