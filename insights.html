@@ -677,7 +677,7 @@
 <section class="section" id="insights" style="padding-top:40px">
   <div class="wrap">
     <div class="ifilter reveal" role="group" aria-label="Filtrar por categoria">
-      <button class="ifb active" data-filter="all">Todos <span class="cnt">80</span></button>
+      <button class="ifb active" data-filter="all">Todos <span class="cnt">86</span></button>
       <button class="ifb" data-filter="ecommerce">E-commerce <span class="cnt">34</span></button>
       <button class="ifb" data-filter="trafego">Tráfego pago <span class="cnt">18</span></button>
       <button class="ifb" data-filter="mentoria">Mentoria <span class="cnt">13</span></button>
@@ -756,7 +756,7 @@
         <span class="ibody">
           <span class="ichip">Gestão &middot; Guia</span>
           <h2>Reforma tributária no e-commerce: o que muda no seu caixa</h2>
-          <p>O split payment recolhe o imposto no ato do pagamento. O valor devido é o mesmo, mas o capital de giro que você usava some.</p>
+          <p>O imposto caminha para ser separado no fluxo do pagamento. O valor devido é o mesmo — o que muda é o capital de giro que você usava sem perceber.</p>
           <span class="imeta">
             <span class="mt">8 min de leitura</span>
             <span class="dot-sep">&middot;</span>
@@ -2292,6 +2292,12 @@
 <script>
 (function(){
   var btns=document.querySelectorAll('.ifb'), cards=document.querySelectorAll('.icard'), empty=document.getElementById('iEmpty');
+  btns.forEach(function(b){
+    var f=b.dataset.filter, c=b.querySelector('.cnt');
+    if(!c) return;
+    c.textContent = f==='all' ? cards.length
+      : document.querySelectorAll('.icard[data-cat="'+f+'"]').length;
+  });
   btns.forEach(function(b){
     b.addEventListener('click', function(){
       var f=b.dataset.filter, shown=0;

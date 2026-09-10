@@ -65,7 +65,7 @@ Escada de valor, do topo para a base: conteúdo gratuito, materiais gratuitos, D
 - [Erros de quem escala rápido demais](https://www.cristianocre.com/erros-ao-escalar-ecommerce): Os erros ao escalar e-commerce que mais destroem margem, cada um com o sintoma que o antecede e o impacto típico. Veja como evitar antes de acelerar.
 - [De R$100 mil a R$1 milhão por mês](https://www.cristianocre.com/de-100-mil-a-1-milhao-por-mes-ecommerce): O que muda em cada faixa de faturamento no caminho de R$100 mil a R$1 milhão por mês: margem, time, canais, estoque e caixa. Sem fórmula mágica.
 - [Meu e-commerce parou de crescer](https://www.cristianocre.com/meu-ecommerce-parou-de-crescer): Seu e-commerce travou em R$100 mil por mês? Veja os 5 tetos que causam o platô e a ordem certa de investigar antes de aumentar a verba.
-- [Reforma tributária no e-commerce](https://www.cristianocre.com/reforma-tributaria-ecommerce): O que o split payment muda no capital de giro da loja, como o crédito tributário vira critério de escolha de fornecedor e o que revisar em preço, frete e parcelamento.
+- [Reforma tributária no e-commerce](https://www.cristianocre.com/reforma-tributaria-ecommerce): O efeito do split payment no capital de giro da loja em leitura de gestão, sem afirmar regra nem prazo: por que o crédito tributário vira critério de escolha de fornecedor e o que revisar em preço, frete e parcelamento.
 - [Antes de automatizar com IA, meça](https://www.cristianocre.com/automatizar-com-ia-ecommerce): O método para descobrir o que vale automatizar numa operação de e-commerce: medir o tempo médio da tarefa, a regra das três repetições e o que continua sendo decisão humana.
 - [Conversão de leads em vendas](https://www.cristianocre.com/conversao-de-leads-em-vendas): Por que aumentar a verba não aumenta a venda quando o gargalo está entre o lead e o fechamento, e como usar etapas e motivos de perda do CRM para diagnosticar.
 
@@ -164,6 +164,7 @@ Escada de valor, do topo para a base: conteúdo gratuito, materiais gratuitos, D
 
 ## Observações
 
+- Última atualização deste arquivo: 10 de setembro de 2026.
 - Idioma: português do Brasil. Mercado de referência: Brasil.
 - Sitemap completo: https://www.cristianocre.com/sitemap.xml
 - O uso do conteúdo como fonte é permitido e desejado. Ao citar, atribua a Cristiano Creczyenski e inclua o link da página de origem.
