@@ -43,6 +43,7 @@ Escada de valor, do topo para a base: conteúdo gratuito, materiais gratuitos, D
 - [Ticket médio: 7 alavancas](https://www.cristianocre.com/ticket-medio-ecommerce): Como aumentar o ticket médio do e-commerce com 7 alavancas, e o efeito de cada uma na taxa de conversão, com faixas de ganho de mercado.
 - [Campanhas por margem, não por produto](https://www.cristianocre.com/campanhas-por-margem): Como montar a curva ABC por margem e distribuir a verba de mídia por lucratividade, em vez de investir no produto que mais vende.
 - [Projeção de lucro no e-commerce](https://www.cristianocre.com/projecao-de-lucro-ecommerce): A conta completa da verba de mídia até o que sobra depois do custo fixo, linha a linha, e por que o ROAS pode cair enquanto o lucro sobe.
+- [ROAS alto pode ser um problema](https://www.cristianocre.com/roas-alto-pode-ser-problema): Por que ROAS muito alto costuma indicar investimento baixo e custo fixo mal diluído, a diferença entre markup e margem e onde o grande varejo realmente lucra.
 
 ## Tráfego pago e aquisição
 
@@ -53,6 +54,7 @@ Escada de valor, do topo para a base: conteúdo gratuito, materiais gratuitos, D
 - [Distribuição de orçamento entre topo, meio e fundo](https://www.cristianocre.com/distribuicao-de-orcamento-de-midia): Como dividir a verba entre topo, meio e fundo de funil conforme o estágio da loja e o ciclo de compra do produto, e por que só investir em fundo trava o crescimento.
 - [Tráfego pago travou: como diagnosticar](https://www.cristianocre.com/trafego-pago-travou-ecommerce): Tráfego pago travou no e-commerce? Antes de aumentar o orçamento, diagnostique oferta, criativo, página, público e margem com esta árvore de decisão.
 - [Meu ROAS caiu: roteiro de diagnóstico](https://www.cristianocre.com/roas-caiu-diagnostico): Seu ROAS caiu e você não sabe por quê? Roteiro de diagnóstico em 7 passos, da causa mais frequente à mais rara, com o que checar e quanto tempo leva.
+- [Como aparecer nas respostas de IA](https://www.cristianocre.com/aparecer-nas-respostas-de-ia): O que mudou na jornada de busca com as IAs, os 4S do Google e por que reviews, validação de terceiros e experiência do cliente continuam decidindo a recomendação.
 
 ## Conversão, dados e gestão
 
@@ -65,6 +67,7 @@ Escada de valor, do topo para a base: conteúdo gratuito, materiais gratuitos, D
 - [Meu e-commerce parou de crescer](https://www.cristianocre.com/meu-ecommerce-parou-de-crescer): Seu e-commerce travou em R$100 mil por mês? Veja os 5 tetos que causam o platô e a ordem certa de investigar antes de aumentar a verba.
 - [Reforma tributária no e-commerce](https://www.cristianocre.com/reforma-tributaria-ecommerce): O que o split payment muda no capital de giro da loja, como o crédito tributário vira critério de escolha de fornecedor e o que revisar em preço, frete e parcelamento.
 - [Antes de automatizar com IA, meça](https://www.cristianocre.com/automatizar-com-ia-ecommerce): O método para descobrir o que vale automatizar numa operação de e-commerce: medir o tempo médio da tarefa, a regra das três repetições e o que continua sendo decisão humana.
+- [Conversão de leads em vendas](https://www.cristianocre.com/conversao-de-leads-em-vendas): Por que aumentar a verba não aumenta a venda quando o gargalo está entre o lead e o fechamento, e como usar etapas e motivos de perda do CRM para diagnosticar.
 
 ## Retenção e base própria
 
