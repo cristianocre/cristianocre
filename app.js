@@ -428,3 +428,73 @@ document.querySelectorAll('.vthumb').forEach(btn=>{
     setTimeout(()=>{ if(armado && !aberto && !disparou){ disparou = true; abrir(); } }, 45000);
   }
 })();
+
+// ===== LP de evento (/black): contagem regressiva e barra fixa de CTA =====
+// Todo o bloco depende de elementos que só existem na LP do evento.
+
+// Contagem regressiva. A data vem do proprio HTML, com fuso declarado.
+(function(){
+  const alvos = document.querySelectorAll('[data-countdown]');
+  if(!alvos.length) return;
+  const DUAS = n => String(n).padStart(2,'0');
+  const JANELA_AO_VIVO = 3*60*60*1000; // enquanto a live roda, deixa de contar
+
+  function pintar(){
+    const agora = Date.now();
+    alvos.forEach(el=>{
+      const quando = Date.parse(el.dataset.countdown);
+      if(isNaN(quando)) return;
+      const falta = quando - agora;
+      const curto = el.hasAttribute('data-curto');
+
+      if(falta <= 0){
+        if(agora - quando < JANELA_AO_VIVO){
+          el.classList.add('live');
+          el.textContent = 'No ar agora';
+          el.removeAttribute('hidden');
+        } else {
+          el.setAttribute('hidden','');
+        }
+        return;
+      }
+
+      const d = Math.floor(falta/864e5);
+      const h = Math.floor(falta/36e5) % 24;
+      const m = Math.floor(falta/6e4) % 60;
+
+      if(curto){
+        el.textContent = `faltam ${d}d ${DUAS(h)}h ${DUAS(m)}min`;
+      } else {
+        el.innerHTML =
+          `<div class="u"><b>${d}</b><span>dias</span></div>` +
+          `<div class="u"><b>${DUAS(h)}</b><span>horas</span></div>` +
+          `<div class="u"><b>${DUAS(m)}</b><span>min</span></div>`;
+      }
+      el.removeAttribute('hidden');
+    });
+  }
+
+  pintar();
+  setInterval(pintar, 1000);
+})();
+
+// Barra fixa: aparece quando o formulario do topo sai da tela, some quando volta.
+(function(){
+  const barra = document.getElementById('evSticky');
+  const alvo  = document.getElementById('inscricao');
+  if(!barra || !alvo) return;
+
+  const obs = new IntersectionObserver(entradas=>{
+    entradas.forEach(e=>{
+      const mostrar = !e.isIntersecting;
+      barra.classList.toggle('on', mostrar);
+      document.body.classList.toggle('ev-bar', mostrar);
+    });
+  },{threshold:0});
+  obs.observe(alvo);
+})();
+
+// Origem do clique nos CTAs da LP, para saber qual posicao converte.
+document.querySelectorAll('a[href="#inscricao"][data-cta]').forEach(a=>{
+  a.addEventListener('click',()=> track('clique_cta_evento',{origem:a.dataset.cta,evento:'A Black da Performance'},'ViewContent',{content_name:'A Black da Performance'}));
+});

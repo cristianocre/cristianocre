@@ -699,3 +699,67 @@ footer{border-top:1px solid var(--line-soft);margin-top:40px;padding:64px 0 30px
   .ev-bio .stat{flex-direction:row;align-items:baseline;text-align:left;gap:12px}
   .marquee-track span{font-size:11.5px;letter-spacing:.12em}
 }
+
+/* ---- /black · contagem regressiva ---- */
+.ev-count{display:flex;gap:8px;margin-top:14px}
+.ev-count[hidden]{display:none}
+.ev-count .u{
+  flex:1;min-width:0;background:rgba(8,16,40,.5);border:1px solid var(--line);
+  border-radius:12px;padding:9px 6px;text-align:center;
+}
+.ev-count .u b{display:block;font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.ev-count .u span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-soft);margin-top:3px}
+.ev-count.live{
+  display:block;text-align:center;padding:12px;border-radius:12px;
+  border:1px solid rgba(43,212,111,.35);background:rgba(43,212,111,.08);
+  color:var(--green);font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;
+}
+.diag-side .ev-count{margin-top:14px}
+.diag-side .ev-count .u{background:rgba(255,255,255,.06)}
+
+/* ---- /black · o que você recebe ao se inscrever ---- */
+.ev-gets{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:9px}
+.ev-gets li{position:relative;padding-left:26px;font-size:14px;line-height:1.5;color:var(--muted)}
+.ev-gets li b{color:var(--text);font-weight:700}
+.ev-gets li::before{
+  content:"";position:absolute;left:2px;top:.34em;width:13px;height:7px;
+  border-left:2.4px solid var(--green);border-bottom:2.4px solid var(--green);
+  transform:rotate(-45deg);
+}
+
+/* ---- /black · nota de honestidade da prova ---- */
+.ev-prova-nb{
+  max-width:72ch;margin:26px auto 0;text-align:center;
+  color:var(--muted-soft);font-size:13px;line-height:1.6;
+}
+.ev-prova-nb a{color:var(--green);text-decoration:underline;text-underline-offset:3px}
+
+/* ---- /black · barra fixa de CTA (só mobile) ---- */
+.ev-sticky{
+  position:fixed;left:0;right:0;bottom:0;z-index:95;display:none;
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));
+  background:rgba(7,11,22,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);
+  transform:translateY(110%);transition:transform .3s var(--ease);
+}
+.ev-sticky.on{transform:translateY(0)}
+.ev-sticky-in{display:flex;align-items:center;gap:12px;max-width:var(--maxw);margin:0 auto}
+.ev-sticky .txt{min-width:0}
+.ev-sticky .txt b{display:block;font-size:13.5px;font-weight:800;letter-spacing:-.01em;white-space:nowrap}
+.ev-sticky .ev-count-curto{
+  display:block;margin-top:1px;font-size:11.5px;font-weight:700;color:var(--green);
+  white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+.ev-sticky .ev-count-curto[hidden]{display:none}
+.ev-sticky .btn{margin-left:auto;flex-shrink:0}
+
+@media(max-width:980px){
+  /* abaixo de 980 a barra assume o CTA: um só, e no alcance do polegar */
+  .ev-nav .nav-right .btn{display:none}
+  .ev-sticky{display:block}
+  body.ev-bar .wa-float{bottom:88px}
+}
+@media(max-width:380px){
+  .ev-sticky .txt b{font-size:12.5px}
+  .ev-sticky .btn{padding:11px 15px;font-size:13.5px}
+}
+@media(prefers-reduced-motion:reduce){.ev-sticky{transition:none}}
