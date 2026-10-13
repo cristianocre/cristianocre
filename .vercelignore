@@ -1,0 +1,8 @@
+# Arquivos do repositório que não vão para o site no ar.
+# Documentação e rascunhos em markdown
+*.md
+# Testes e ferramentas locais
+/test
+/publicar.bat
+/.env.example
+/.claude

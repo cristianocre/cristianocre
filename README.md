@@ -1,76 +1,78 @@
-# Site — Cristiano Creczyenski
+# cristianocre.com
 
-Site institucional + captação de leads (materiais) gravando direto no Notion.
+Site pessoal do Cristiano Creczyenski: home, landing pages (Diagnóstico 360,
+mentoria, treinamentos), materiais gratuitos com captação de leads no Notion,
+podcast e o blog em `/insights`.
 
-## Estrutura
+**Este repositório é público.** Nada de nota interna, dado de cliente ou
+segredo em arquivo versionado, nem em comentário HTML (aparece no
+view-source). Segredos ficam nas variáveis de ambiente da Vercel.
+
+## Como está montado
+
+HTML, CSS e JavaScript puros. Sem framework, sem `package.json`, sem build.
+
+| Arquivo | O que é |
+|---|---|
+| `*.html` (raiz) | Uma página por arquivo. `index.html` é a home, `insights.html` é o índice do blog |
+| `styles.css` | Estilos de todas as páginas |
+| `app.js` | Script de todas as páginas: menu, formulários, GA4, Pixel da Meta. Mudança aqui afeta o site inteiro |
+| `youtube-feed.js` | Carrossel de vídeos da home |
+| `api/inscrever.js` | Função da Vercel: grava o lead no Notion e envia o evento à API de Conversões da Meta |
+| `api/capi.js`, `api/_meta.js` | API de Conversões da Meta |
+| `api/youtube.js` | Feed do YouTube para o carrossel |
+| `img/` | Imagens. Post novo: JPG de 1200 × 675, de 47 a 65 KB |
+| `sitemap.xml`, `robots.txt`, `llms.txt` | SEO e GEO. Página nova entra nos três |
+| `vercel.json` | URLs sem `.html` (`cleanUrls`) |
+| `test/` | Testes da função de leads |
+| `.vercelignore` | Arquivos do repositório que não vão para o site no ar |
+
+`inscrever.js` e `youtube.js` na raiz são versões antigas das funções de
+`api/`. Nenhuma página carrega esses arquivos.
+
+## Publicação
+
+- **Branch de produção:** `main-cristianocre`. Cada envio nele é publicado
+  pela Vercel em cerca de 1 minuto, em https://www.cristianocre.com
+  (`cristianocre.com` sem www redireciona para lá).
+- Outro branch gera uma prévia na Vercel, sem mexer no site no ar.
+- Domínio e variáveis: Vercel → projeto → Settings.
+
+## Trabalhar no site
+
+```bash
+git clone https://github.com/cristianocre/cristianocre.git ~/PROJETOS/CRISTIANOCRE-SITE
 ```
-index.html          Home
-diagnostico.html    Diagnóstico 360 (LP)
-materiais.html      Materiais gratuitos (3 iscas)
-mentoria.html       Mentoria (em breve / WhatsApp)
-styles.css          Estilos (compartilhado)
-app.js              Scripts (compartilhado)
-cristiano.jpg       Foto do mini CV
-vercel.json         URLs limpas
-api/inscrever.js    Função que grava os leads no Notion
-```
-> Mantenha TODOS os arquivos juntos, com o `index.html` e a pasta `api/` na RAIZ do projeto.
 
----
+1. Antes de começar: `git pull` (no VS Code: Sync Changes).
+2. Edite. Para ver no navegador: `python3 -m http.server 8000` na pasta e
+   abra http://localhost:8000/index.html (as URLs sem `.html` e as funções de
+   `api/` só funcionam na Vercel).
+3. Mexeu em `api/inscrever.js`: `node test/testar-inscrever-local.mjs`. O
+   teste não envia nada ao Notion.
+4. Envie: commit com uma frase que diga o que mudou e `git push` (no VS Code:
+   Commit e depois Sync Changes).
 
-## Deploy (GitHub + Vercel) — recomendado
+`publicar.bat` faz o passo 4 no Windows.
 
-1. Crie um repositório novo no GitHub e suba todos estes arquivos na raiz:
-   ```
-   git init
-   git add .
-   git commit -m "Site Cristiano Creczyenski"
-   git branch -M main
-   git remote add origin https://github.com/SEU_USUARIO/SEU_REPO.git
-   git push -u origin main
-   ```
-2. Na Vercel: **Add New → Project → importe esse repositório**.
-3. Framework Preset: **Other**. Não precisa de build command. Clique em **Deploy**.
+## Variáveis de ambiente (Vercel)
 
-O site já sobe funcionando (páginas, navegação, design). A **captação de e-mail** precisa dos 2 passos abaixo.
+Lista e explicação de cada uma em `.env.example`. Variável nova só vale para
+publicações feitas depois de criada: depois de adicionar, use Redeploy.
 
----
+| Variável | Para quê |
+|---|---|
+| `NOTION_TOKEN` | Integração interna do Notion que grava os leads |
+| `NOTION_DATABASE_ID` | Base "Leads: Materiais (Site)" |
+| `META_CAPI_TOKEN` | API de Conversões da Meta |
+| `META_PIXEL_ID`, `META_TEST_EVENT_CODE`, `META_API_VERSION` | Opcionais |
 
-## Ativar a captação de leads (Notion)
+Diagnóstico rápido: `https://www.cristianocre.com/api/inscrever` mostra se
+o Notion está configurado, e `/api/capi`, se a Meta está.
 
-### Passo 1 — Variáveis de ambiente (NO MESMO projeto do deploy)
-Vercel → seu projeto → **Settings → Environment Variables** → adicione as duas, marcadas para **Production** e **Preview**:
+## Pendências
 
-| Name | Value |
-|------|-------|
-| `NOTION_TOKEN` | o token da integração interna do Notion (passo 2) |
-| `NOTION_DATABASE_ID` | `cccc23073eb6453bb5165a882ac78062` |
-
-> ⚠️ Confira que está adicionando no projeto que serve o seu domínio. Variável em projeto errado = erro "Integração não configurada".
-> ⚠️ Variáveis só valem para deploys feitos DEPOIS de criá-las. Após adicionar, faça **Redeploy**.
-
-### Passo 2 — Integração do Notion
-1. notion.so/my-integrations → **New integration** → tipo **Internal** → copie o **Internal Integration Secret** (esse é o `NOTION_TOKEN`).
-2. Abra a base **Leads — Materiais (Site)**:
-   https://app.notion.com/p/cccc23073eb6453bb5165a882ac78062
-   → menu **⋯ → Connections → Connect to →** selecione a sua integração.
-   (Sem isso, o Notion recusa a gravação.)
-
-### Passo 3 — Testar
-- Abra no navegador: `https://SEU-DOMINIO/api/inscrever`
-  - `configured:true` → tudo certo, teste o formulário.
-  - `hasToken:false` ou `hasDb:false` → a variável não está nesse projeto (ou vazia).
-- Preencha um e-mail na página **Materiais**: deve aparecer uma linha nova no Notion e redirecionar para o material.
-
----
-
-## Pendências (quando quiser)
-- Trocar os links das iscas para versões **somente-leitura/cópia** (hoje são links de edição) — em `materiais.html`, atributo `data-redirect`.
-- Atualizar YouTube/LinkedIn reais no rodapé (hoje YouTube aponta para o canal do podcast).
+- Trocar os links das iscas por versões só de leitura ou cópia (hoje são
+  links de edição), em `materiais.html`, atributo `data-redirect`.
+- Conferir YouTube e LinkedIn reais no rodapé.
 - Trocar as fotos genéricas dos avatares do hero (`index.html`).
-- Domínio `cristianocre.com`: Vercel → projeto → **Settings → Domains**.
-
-## Observações
-- "e-commerce" usa hífen não separável para nunca quebrar de linha.
-- Link do podcast: youtube.com/@PerformanceParaResultados
-- WhatsApp da mentoria já configurado com mensagem pronta.

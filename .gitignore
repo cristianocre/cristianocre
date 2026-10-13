@@ -23,3 +23,6 @@ _to_delete/
 *.bak
 *.tmp
 *.log
+
+# Claude Code: atalho local para as skills de ~/Desktop/CRISTIANOCRE
+.claude/
