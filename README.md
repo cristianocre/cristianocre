@@ -25,10 +25,8 @@ HTML, CSS e JavaScript puros. Sem framework, sem `package.json`, sem build.
 | `sitemap.xml`, `robots.txt`, `llms.txt` | SEO e GEO. Página nova entra nos três |
 | `vercel.json` | URLs sem `.html` (`cleanUrls`) |
 | `test/` | Testes da função de leads |
+| `verificar-videos.html` | Página interna (noindex) que confere os feeds de `api/youtube` no site no ar |
 | `.vercelignore` | Arquivos do repositório que não vão para o site no ar |
-
-`inscrever.js` e `youtube.js` na raiz são versões antigas das funções de
-`api/`. Nenhuma página carrega esses arquivos.
 
 ## Publicação
 
@@ -52,8 +50,6 @@ git clone https://github.com/cristianocre/cristianocre.git ~/PROJETOS/CRISTIANOC
    teste não envia nada ao Notion.
 4. Envie: commit com uma frase que diga o que mudou e `git push` (no VS Code:
    Commit e depois Sync Changes).
-
-`publicar.bat` faz o passo 4 no Windows.
 
 ## Variáveis de ambiente (Vercel)
 

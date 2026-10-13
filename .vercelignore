@@ -3,6 +3,5 @@
 *.md
 # Testes e ferramentas locais
 /test
-/publicar.bat
 /.env.example
 /.claude
